@@ -1,15 +1,67 @@
-import { NavLink, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
+  const [show, setShow] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShow(true), 300);
+    let handleScroll: (() => void) | null = null;
+    if (location.pathname === "/") {
+      handleScroll = () => {
+        setScrolled(window.scrollY >= window.innerHeight * 0.8);
+      };
+      window.addEventListener("scroll", handleScroll);
+    } else {
+      setScrolled(true);
+    }
+    return () => {
+      clearTimeout(timer);
+      if (handleScroll) window.removeEventListener("scroll", handleScroll);
+    };
+  }, [location.pathname]);
+
+  // Slide-in animatie alleen op homepage
+  const slideTitle =
+    location.pathname === "/"
+      ? show
+        ? "translate-x-0 opacity-100"
+        : "-translate-x-32 opacity-0"
+      : "translate-x-0 opacity-100";
+  const slideMenu =
+    location.pathname === "/"
+      ? show
+        ? "translate-y-0 opacity-100"
+        : "-translate-y-16 opacity-0"
+      : "translate-y-0 opacity-100";
+  const slideIcons =
+    location.pathname === "/"
+      ? show
+        ? "translate-x-0 opacity-100"
+        : "translate-x-32 opacity-0"
+      : "translate-x-0 opacity-100";
+
   return (
-    <div className="flex justify-between items-center py-4 px-8">
-      <h1 className="text-3xl font-bold">CORALYNN</h1>
-      <ul className="flex space-x-6 text-lg">
+    <div
+      className={`flex justify-between items-center py-4 px-8 fixed top-0 left-0 w-full z-20 transition-colors duration-500 ${
+        scrolled ? "bg-white text-black shadow" : "bg-transparent text-white"
+      }`}
+    >
+      <h1
+        className={`text-3xl font-bold transition-all duration-700 ${slideTitle}`}
+      >
+        CORALYNN
+      </h1>
+      <ul
+        className={`flex space-x-6 text-lg transition-all duration-700 ${slideMenu}`}
+      >
         <li>
           <NavLink
             to="/"
             className={({ isActive }) =>
-              `cursor-pointer hover:underline${isActive ? "font-bold underline" : ""}`
+              `cursor-pointer ${isActive ? "font-bold underline" : "hover:scale-110 hover:underline"}`
             }
           >
             Home
@@ -19,7 +71,7 @@ const Navbar = () => {
           <NavLink
             to="/about"
             className={({ isActive }) =>
-              `cursor-pointer hover:underline${isActive ? "font-bold underline" : ""}`
+              `cursor-pointer ${isActive ? "font-bold underline" : "hover:scale-110 hover:underline"}`
             }
           >
             About
@@ -29,14 +81,16 @@ const Navbar = () => {
           <NavLink
             to="/contact"
             className={({ isActive }) =>
-              `cursor-pointer hover:underline${isActive ? "font-bold underline" : ""}`
+              `cursor-pointer ${isActive ? "font-bold underline" : "hover:scale-110 hover:underline"}`
             }
           >
             Contact
           </NavLink>
         </li>
       </ul>
-      <ul className="flex space-x-8">
+      <ul
+        className={`flex space-x-8 transition-all duration-700 ${slideIcons}`}
+      >
         <li>
           <Link to="/profile">
             <svg
@@ -45,7 +99,7 @@ const Navbar = () => {
               viewBox="0 0 24 24"
               strokeWidth="2"
               stroke="currentColor"
-              className="w-6 h-6 cursor-pointer"
+              className={`w-6 h-6 cursor-pointer hover:scale-110 transition-all hover:text-blue-500 hover:fill-blue-500 ${location.pathname === "/profile" ? "size-7 text-black fill-black" : ""}`}
             >
               <path
                 strokeLinecap="round"
@@ -63,7 +117,7 @@ const Navbar = () => {
               viewBox="0 0 24 24"
               strokeWidth="2"
               stroke="currentColor"
-              className="w-6 h-6 cursor-pointer"
+              className={`w-6 h-6 cursor-pointer hover:scale-110 transition-all hover:text-red-500 hover:fill-red-500 ${location.pathname === "/favorites" ? "size-7 text-black fill-black" : ""}`}
             >
               <path
                 strokeLinecap="round"
@@ -81,7 +135,7 @@ const Navbar = () => {
               viewBox="0 0 24 24"
               strokeWidth="2"
               stroke="currentColor"
-              className="w-6 h-6 cursor-pointer"
+              className={`w-6 h-6 cursor-pointer hover:scale-110 transition-all hover:text-green-500 hover:fill-green-500 ${location.pathname === "/cart" ? "size-7 text-black fill-black" : ""}`}
             >
               <path
                 strokeLinecap="round"

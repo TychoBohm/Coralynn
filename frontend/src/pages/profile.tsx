@@ -9,8 +9,10 @@ const Profile = () => {
     useState<string>("profielsettings");
   return (
     <>
-      <Navbar />
-      <section className="w-full h-screen flex gap-20 pt-10">
+      <div className="text-black fixed">
+        <Navbar />
+      </div>
+      <section className="w-full h-screen flex gap-20 pt-35">
         <div className="bg-[#F4F4F4] w-150 h-100 p-5 flex flex-col gap-3">
           <h2 className="text-4xl font-extrabold mb-5">Profiel opties</h2>
           <p
