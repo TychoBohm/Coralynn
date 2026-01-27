@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
@@ -6,19 +6,34 @@ const Navbar = () => {
       <h1 className="text-3xl font-bold">CORALYNN</h1>
       <ul className="flex space-x-6 text-lg">
         <li>
-          <Link to="/shop" className="cursor-pointer hover:underline">
-            Shop
-          </Link>
+          <NavLink
+            to="/product"
+            className={({ isActive }) =>
+              `cursor-pointer hover:underline${isActive ? "font-bold underline" : ""}`
+            }
+          >
+            Home
+          </NavLink>
         </li>
         <li>
-          <Link to="/about" className="cursor-pointer hover:underline">
+          <NavLink
+            to="/about"
+            className={({ isActive }) =>
+              `cursor-pointer hover:underline${isActive ? "font-bold underline" : ""}`
+            }
+          >
             About
-          </Link>
+          </NavLink>
         </li>
         <li>
-          <Link to="/contact" className="cursor-pointer hover:underline">
+          <NavLink
+            to="/contact"
+            className={({ isActive }) =>
+              `cursor-pointer hover:underline${isActive ? "font-bold underline" : ""}`
+            }
+          >
             Contact
-          </Link>
+          </NavLink>
         </li>
       </ul>
       <ul className="flex space-x-8">
