@@ -7,7 +7,7 @@ const Navbar = () => {
       <ul className="flex space-x-6 text-lg">
         <li>
           <NavLink
-            to="/product"
+            to="/"
             className={({ isActive }) =>
               `cursor-pointer hover:underline${isActive ? "font-bold underline" : ""}`
             }

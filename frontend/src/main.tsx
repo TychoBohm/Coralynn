@@ -7,6 +7,7 @@ import Card from "./components/card";
 import Footer from "./components/footer";
 import { Routes, Route } from "react-router-dom";
 import Product from "./pages/product";
+import Profile from "./pages/profile";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -70,6 +71,7 @@ createRoot(document.getElementById("root")!).render(
           }
         />
         <Route path="/product" element={<Product />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
