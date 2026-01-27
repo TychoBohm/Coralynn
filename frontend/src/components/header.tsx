@@ -5,7 +5,7 @@ import Navbar from "./navbar";
 const Header = () => {
   return (
     <div>
-      <div className="absolute top-0 left-0 w-full p-4 z-10 text-white fixed">
+      <div className="fixed top-0 left-0 w-full p-4 z-10 text-white">
         <Navbar />
       </div>
       <video
