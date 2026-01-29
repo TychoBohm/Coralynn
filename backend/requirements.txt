@@ -1,0 +1,23 @@
+# Coralynn Backend - Python Dependencies
+# Install with: pip install -r requirements.txt
+
+# FastAPI framework
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+
+# Database
+sqlalchemy==2.0.46
+psycopg2-binary==2.9.9
+alembic==1.18.2
+
+# Authentication
+python-jose[cryptography]==3.5.0
+bcrypt==4.2.0
+python-multipart==0.0.22
+
+# Validation
+pydantic[email]==2.12.5
+email-validator==2.3.0
+
+# Environment
+python-dotenv==1.0.1

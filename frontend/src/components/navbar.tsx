@@ -156,7 +156,7 @@ const Navbar = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="2"
                 stroke="currentColor"
-                className={`w-6 h-6 cursor-pointer hover:scale-110 hover:fill-white ${location.pathname === "/profile" ? "size-7 text-black fill-black" : ""}`}
+                className={`w-6 h-6 cursor-pointer hover:scale-110  ${location.pathname === "/profile" ? "size-7 text-black fill-black" : ""}`}
               >
                 <path
                   strokeLinecap="round"
@@ -182,7 +182,7 @@ const Navbar = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="2"
                 stroke="currentColor"
-                className={`w-6 h-6 cursor-pointer hover:scale-110 hover:fill-white ${location.pathname === "/wishlist" ? "size-7 text-black fill-black" : ""}`}
+                className={`w-6 h-6 cursor-pointer hover:scale-110  ${location.pathname === "/wishlist" ? "size-7 text-black fill-black" : ""}`}
               >
                 <path
                   strokeLinecap="round"
@@ -205,7 +205,7 @@ const Navbar = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="2"
                 stroke="currentColor"
-                className={`w-6 h-6 cursor-pointer hover:scale-110  hover:fill-white ${cartOpen ? "size-7 text-black fill-black" : ""}`}
+                className={`w-6 h-6 cursor-pointer hover:scale-110  ${cartOpen ? "size-7 text-black fill-black" : ""}`}
               >
                 <path
                   strokeLinecap="round"
