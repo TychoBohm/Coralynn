@@ -8,7 +8,7 @@ import Footer from "./components/footer";
 import { Routes, Route, Link } from "react-router-dom";
 import Product from "./pages/product";
 import Profile from "./pages/profile";
-import Wishlist from "./pages/wishlist";
+import Wishlist from "./pages/wishList";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
