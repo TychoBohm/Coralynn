@@ -9,7 +9,7 @@ const ProfilePage = () => {
     useState<string>("profileSettings");
   return (
     <>
-      <div className="text-black fixed">
+      <div className="fixed">
         <Navbar />
       </div>
       <section className="w-full h-screen flex gap-20 pt-35">

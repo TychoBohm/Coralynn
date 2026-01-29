@@ -8,6 +8,7 @@ import Footer from "./components/footer";
 import { Routes, Route, Link } from "react-router-dom";
 import Product from "./pages/product";
 import Profile from "./pages/profile";
+import Wishlist from "./pages/wishlist";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -18,15 +19,15 @@ createRoot(document.getElementById("root")!).render(
           element={
             <>
               <Header />
-              <section className="h-screen">
-                <div className="px-10 pt-10">
+              <section className="px-8 h-screen">
+                <div className="pt-10">
                   <h2 className="text-4xl font-extrabold">Onze Collectie</h2>
                   <p className="text-2xl font-light mt-2">
                     Ontdek onze exclusieve linnen zwemkleding
                   </p>
                 </div>
                 <div
-                  className="px-10 flex gap-8 pb-6 pt-6 overflow-x-auto flex-nowrap scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+                  className="flex gap-8 pb-6 pt-6 overflow-x-auto flex-nowrap "
                   style={{ WebkitOverflowScrolling: "touch" }}
                 >
                   <Link
@@ -87,6 +88,7 @@ createRoot(document.getElementById("root")!).render(
         />
         <Route path="/product" element={<Product />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/wishlist" element={<Wishlist />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
