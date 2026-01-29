@@ -3,9 +3,12 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import Optional
 from uuid import UUID
+from pathlib import Path
+import os
 
 from app.db.database import get_db
 from app.models.product import Product, ProductImage
+from app.models.user import User
 from app.schemas.product import (
     ProductCreate,
     ProductUpdate,
@@ -13,8 +16,21 @@ from app.schemas.product import (
     ProductImageCreate,
     ProductImageResponse
 )
+from app.routers.auth import get_current_superuser
 
 router = APIRouter(prefix="/api/products", tags=["products"])
+
+# uploads folder
+UPLOAD_DIR = Path(__file__).resolve().parent.parent.parent / "uploads"
+
+
+def delete_image_file(image_url: str):
+    # verwijder bestand van disk als het een lokale upload is
+    if "/uploads/" in image_url:
+        filename = image_url.split("/uploads/")[-1]
+        file_path = UPLOAD_DIR / filename
+        if file_path.exists():
+            os.remove(file_path)
 
 
 @router.get("", response_model=list[ProductResponse])
@@ -41,8 +57,12 @@ def get_product(product_id: UUID, db: Session = Depends(get_db)):
 
 
 @router.post("", response_model=ProductResponse, status_code=status.HTTP_201_CREATED)
-def create_product(product_data: ProductCreate, db: Session = Depends(get_db)):
-    # maak nieuw product aan
+def create_product(
+    product_data: ProductCreate,
+    current_user: User = Depends(get_current_superuser),
+    db: Session = Depends(get_db)
+):
+    # maak nieuw product aan (alleen superuser)
     new_product = Product(
         title=product_data.title,
         description=product_data.description,
@@ -69,9 +89,10 @@ def create_product(product_data: ProductCreate, db: Session = Depends(get_db)):
 def update_product(
     product_id: UUID,
     product_data: ProductUpdate,
+    current_user: User = Depends(get_current_superuser),
     db: Session = Depends(get_db)
 ):
-    # update bestaand product
+    # update bestaand product (alleen superuser)
     product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
         raise HTTPException(
@@ -92,14 +113,22 @@ def update_product(
 
 
 @router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_product(product_id: UUID, db: Session = Depends(get_db)):
-    # verwijder product
+def delete_product(
+    product_id: UUID,
+    current_user: User = Depends(get_current_superuser),
+    db: Session = Depends(get_db)
+):
+    # verwijder product (alleen superuser)
     product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Product niet gevonden"
         )
+
+    # verwijder eerst alle image bestanden van disk
+    for image in product.images:
+        delete_image_file(str(image.image_url))
 
     db.delete(product)
     db.commit()
@@ -111,9 +140,10 @@ def delete_product(product_id: UUID, db: Session = Depends(get_db)):
 def add_product_image(
     product_id: UUID,
     image_data: ProductImageCreate,
+    current_user: User = Depends(get_current_superuser),
     db: Session = Depends(get_db)
 ):
-    # voeg image toe aan product
+    # voeg image toe aan product (alleen superuser)
     product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
         raise HTTPException(
@@ -136,9 +166,10 @@ def add_product_image(
 def delete_product_image(
     product_id: UUID,
     image_id: UUID,
+    current_user: User = Depends(get_current_superuser),
     db: Session = Depends(get_db)
 ):
-    # verwijder image van product
+    # verwijder image van product (alleen superuser)
     image = db.query(ProductImage).filter(
         ProductImage.id == image_id,
         ProductImage.product_id == product_id
@@ -149,6 +180,9 @@ def delete_product_image(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Afbeelding niet gevonden"
         )
+
+    # verwijder bestand van disk
+    delete_image_file(str(image.image_url))
 
     db.delete(image)
     db.commit()

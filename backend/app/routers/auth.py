@@ -3,10 +3,11 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from datetime import timedelta
+from uuid import UUID
 
 from app.db.database import get_db
 from app.models.user import User
-from app.schemas.user import UserCreate, UserResponse, Token, UserLogin, UserUpdate
+from app.schemas.user import UserCreate, UserResponse, Token, UserLogin, UserUpdate, SetSuperuser
 from app.core.security import (
     verify_password,
     get_password_hash,
@@ -59,6 +60,18 @@ async def get_current_user(
         raise credentials_exception
     
     return user
+
+
+async def get_current_superuser(
+    current_user: User = Depends(get_current_user)
+) -> User:
+    # check of user superuser is
+    if not bool(current_user.is_superuser):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Alleen superusers hebben toegang"
+        )
+    return current_user
 
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
@@ -153,3 +166,33 @@ def update_me(
     db.commit()
     db.refresh(current_user)
     return current_user
+
+
+@router.put("/users/{user_id}/superuser", response_model=UserResponse)
+def set_superuser_status(
+    user_id: UUID,
+    data: SetSuperuser,
+    current_user: User = Depends(get_current_superuser),
+    db: Session = Depends(get_db)
+):
+    # alleen superusers kunnen andere users superuser maken
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Gebruiker niet gevonden"
+        )
+    
+    user.is_superuser = data.is_superuser  # type: ignore
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+@router.get("/users", response_model=list[UserResponse])
+def get_all_users(
+    current_user: User = Depends(get_current_superuser),
+    db: Session = Depends(get_db)
+):
+    # alleen superusers kunnen alle users zien
+    return db.query(User).all()

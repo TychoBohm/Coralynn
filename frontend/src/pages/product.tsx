@@ -53,7 +53,9 @@ const Product = () => {
   }
 
   // sorteer images op sort_order
-  const sortedImages = [...product.images].sort((a, b) => a.sort_order - b.sort_order);
+  const sortedImages = [...product.images].sort(
+    (a, b) => a.sort_order - b.sort_order,
+  );
   const mainImage = sortedImages[selectedImage]?.image_url;
 
   return (
@@ -63,13 +65,13 @@ const Product = () => {
       </div>
       <section className="h-screen pt-30 flex gap-8 justify-center px-20">
         {/* kleine thumbnails links */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 max-h-[520px] overflow-y-auto">
           {sortedImages.map((img, index) => (
             <img
               key={img.id}
               src={img.image_url}
               alt={`${product.title} ${index + 1}`}
-              className={`w-50 h-auto cursor-pointer border-2 ${
+              className={`w-48 h-48 object-cover cursor-pointer border-2 rounded shrink-0 ${
                 selectedImage === index ? "border-black" : "border-transparent"
               }`}
               onClick={() => setSelectedImage(index)}
@@ -83,7 +85,7 @@ const Product = () => {
             <img
               src={mainImage}
               alt={product.title}
-              className="w-130 h-auto"
+              className="w-130 h-130 object-cover rounded"
             />
           )}
         </div>
@@ -91,7 +93,9 @@ const Product = () => {
         {/* product info */}
         <div className="flex flex-col justify-evenly mb-25">
           <div>
-            <h2 className="text-2xl font-medium justify-start">{product.title}</h2>
+            <h2 className="text-2xl font-medium justify-start">
+              {product.title}
+            </h2>
             <p className="w-[50ch]">
               {product.description || "Geen beschrijving beschikbaar"}
             </p>

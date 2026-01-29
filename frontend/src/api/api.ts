@@ -61,6 +61,7 @@ export interface User {
   email: string;
   phone_number: string | null;
   address: string | null;
+  is_superuser: boolean;
   created_at: string;
   updated_at: string | null;
 }
@@ -129,4 +130,75 @@ export async function getProducts(): Promise<Product[]> {
 // haal 1 product op
 export async function getProduct(id: string): Promise<Product> {
   return fetchFromApi(`/api/products/${id}`);
+}
+
+// maak nieuw product (alleen superuser)
+export interface ProductCreate {
+  title: string;
+  description?: string;
+  price: number;
+  images?: string[];
+}
+
+export async function createProduct(data: ProductCreate): Promise<Product> {
+  return fetchFromApi('/api/products', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+// update product (alleen superuser)
+export interface ProductUpdate {
+  title?: string;
+  description?: string;
+  price?: number;
+}
+
+export async function updateProduct(id: string, data: ProductUpdate): Promise<Product> {
+  return fetchFromApi(`/api/products/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+}
+
+// verwijder product (alleen superuser)
+export async function deleteProduct(id: string): Promise<void> {
+  return fetchFromApi(`/api/products/${id}`, {
+    method: 'DELETE',
+  });
+}
+
+// voeg image toe aan product (alleen superuser)
+export async function addProductImage(productId: string, imageUrl: string, sortOrder: number = 0): Promise<ProductImage> {
+  return fetchFromApi(`/api/products/${productId}/images`, {
+    method: 'POST',
+    body: JSON.stringify({ image_url: imageUrl, sort_order: sortOrder }),
+  });
+}
+
+// verwijder image van product (alleen superuser)
+export async function deleteProductImage(productId: string, imageId: string): Promise<void> {
+  return fetchFromApi(`/api/products/${productId}/images/${imageId}`, {
+    method: 'DELETE',
+  });
+}
+
+// upload afbeelding
+export async function uploadImage(file: File): Promise<{ filename: string; url: string }> {
+  const token = getToken();
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await fetch(`${BASE_URL}/api/uploads`, {
+    method: 'POST',
+    headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.detail || `Upload error: ${response.status}`);
+  }
+
+  return response.json();
 }
