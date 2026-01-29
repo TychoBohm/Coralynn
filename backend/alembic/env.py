@@ -25,7 +25,8 @@ if config.config_file_name is not None:
 
 # Importeer de Base en alle models voor autogenerate support
 from app.db.database import Base
-from app.models.user import User  # Importeer alle models hier
+from app.models.user import User
+from app.models.product import Product, ProductImage
 
 target_metadata = Base.metadata
 

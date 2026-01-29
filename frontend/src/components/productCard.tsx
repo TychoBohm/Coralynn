@@ -4,7 +4,7 @@ import HerenWit from "../assets/heren-wit.png";
 type CardProps = {
   title: string;
   description: string;
-  price: string;
+  price: string | number;
   imageUrl?: string;
   colors?: string[];
 };
@@ -13,12 +13,14 @@ const Card: React.FC<CardProps> = ({
   title,
   description,
   price,
-  imageUrl = HerenWit,
+  imageUrl,
 }) => {
+  // Gebruik de meegegeven URL of val terug op placeholder
+  const imageSrc = imageUrl || HerenWit;
   return (
     <div className="w-70  bg-white rounded-2xl shadow-md overflow-hidden flex flex-col justify-between">
       <div className="relative">
-        <img src={imageUrl} alt={title} className="w-full h-80 object-cover" />
+        <img src={imageSrc} alt={title} className="w-full h-80 object-cover" />
         <div className="absolute top-4 right-4 flex flex-col gap-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -54,7 +56,7 @@ const Card: React.FC<CardProps> = ({
         <div className="text-lg font-semibold text-gray-800 leading-tight">
           {title}
         </div>
-        <div className="text-md font-light text-gray-500 mb-2 ">
+        <div className="text-md font-light text-gray-500 mb-2 line-clamp-2">
           {description}
         </div>
         <div className="text-base font-bold text-gray-700">€ {price}</div>

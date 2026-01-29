@@ -103,3 +103,30 @@ export function logout() {
 export function isLoggedIn(): boolean {
   return getToken() !== null;
 }
+
+// product types
+export interface ProductImage {
+  id: string;
+  image_url: string;
+  sort_order: number;
+}
+
+export interface Product {
+  id: string;
+  title: string;
+  description: string | null;
+  price: number;
+  created_at: string;
+  updated_at: string | null;
+  images: ProductImage[];
+}
+
+// haal alle producten op
+export async function getProducts(): Promise<Product[]> {
+  return fetchFromApi('/api/products');
+}
+
+// haal 1 product op
+export async function getProduct(id: string): Promise<Product> {
+  return fetchFromApi(`/api/products/${id}`);
+}
