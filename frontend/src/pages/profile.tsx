@@ -1,7 +1,7 @@
 import Footer from "../components/footer";
 import Navbar from "../components/navbar";
-import OrderHistory from "../components/orderhistory";
-import ProfileSettings from "../components/profilesettings";
+import OrderHistory from "../components/orderHistory";
+import ProfileSettings from "../components/profileSettings";
 import { useState } from "react";
 
 const ProfilePage = () => {
