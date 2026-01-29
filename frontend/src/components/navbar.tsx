@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import CartPopup from "./cartpopup";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [show, setShow] = useState(false);
@@ -8,6 +8,7 @@ const Navbar = () => {
     "home" | "collectie" | "contact"
   >("home");
   const location = useLocation();
+  const navigate = useNavigate();
   const [cartOpen, setCartOpen] = useState(false);
 
   useEffect(() => {
@@ -16,7 +17,7 @@ const Navbar = () => {
     if (location.pathname === "/") {
       handleScroll = () => {
         const scrollY = window.scrollY;
-        const vh = window.innerHeight;
+        const vh = window.innerHeight * 0.55;
         const docHeight = document.body.offsetHeight;
         if (scrollY < vh - 10) {
           setActiveSection("home");
@@ -63,16 +64,23 @@ const Navbar = () => {
     <>
       <div
         className={`flex justify-between items-center py-4 px-8 fixed top-0 left-0 w-full z-20 transition-colors duration-500 ${
-          activeSection !== "home"
-            ? "bg-white text-black shadow"
-            : "bg-transparent text-white"
+          location.pathname === "/"
+            ? activeSection !== "home"
+              ? "bg-white text-black shadow"
+              : "bg-transparent text-white"
+            : "bg-white text-black shadow"
         }`}
       >
-        <h1
-          className={`text-3xl font-bold transition-all duration-700 ${slideTitle}`}
+        <Link
+          to="/"
+          className={`${slideTitle} transition-opacity duration-700`}
         >
-          CORALYNN
-        </h1>
+          <h1
+            className={`text-3xl font-bold ${slideTitle} transition-transform duration-700`}
+          >
+            CORALYNN
+          </h1>
+        </Link>
         <ul
           className={`flex space-x-6 text-lg transition-all duration-700 ${slideMenu}`}
         >
@@ -95,10 +103,20 @@ const Navbar = () => {
               type="button"
               className={`cursor-pointer ${activeSection === "collectie" ? "font-bold underline" : "hover:scale-110 hover:underline"}`}
               onClick={() => {
-                window.scrollTo({
-                  top: window.innerHeight * 0.91,
-                  behavior: "smooth",
-                });
+                if (location.pathname !== "/") {
+                  navigate("/", { replace: false });
+                  setTimeout(() => {
+                    window.scrollTo({
+                      top: window.innerHeight * 0.91,
+                      behavior: "smooth",
+                    });
+                  }, 100);
+                } else {
+                  window.scrollTo({
+                    top: window.innerHeight * 0.91,
+                    behavior: "smooth",
+                  });
+                }
               }}
             >
               Collectie
