@@ -10,6 +10,7 @@ import Product from "./pages/product";
 import Profile from "./pages/profile";
 import Wishlist from "./pages/wishList";
 import Checkout from "./pages/checkout";
+import Auth from "./pages/auth";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -91,6 +92,7 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/profile" element={<Profile />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/auth" element={<Auth />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
