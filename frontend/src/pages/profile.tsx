@@ -3,10 +3,20 @@ import Navbar from "../components/navbar";
 import OrderHistory from "../components/orderHistory";
 import ProfileSettings from "../components/profileSettings";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const ProfilePage = () => {
   const [activeComponent, setActiveComponent] =
     useState<string>("profileSettings");
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
   return (
     <>
       <div className="fixed">
@@ -34,6 +44,12 @@ const ProfilePage = () => {
             }
           >
             Bestel Geschiedenis
+          </p>
+          <p
+            onClick={handleLogout}
+            className="hover:cursor-pointer text-red-600 hover:text-red-800 justify-self-end mt-auto"
+          >
+            Uitloggen
           </p>
         </div>
         <div className="bg-[#F4F4F4] w-full">
