@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import CartPopup from "./cartpopup";
-import { NavLink, Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [show, setShow] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState<
+    "home" | "collectie" | "contact"
+  >("home");
   const location = useLocation();
   const [cartOpen, setCartOpen] = useState(false);
 
@@ -13,11 +15,24 @@ const Navbar = () => {
     let handleScroll: (() => void) | null = null;
     if (location.pathname === "/") {
       handleScroll = () => {
-        setScrolled(window.scrollY >= window.innerHeight * 0.5);
+        const scrollY = window.scrollY;
+        const vh = window.innerHeight;
+        const docHeight = document.body.offsetHeight;
+        if (scrollY < vh - 10) {
+          setActiveSection("home");
+        } else if (scrollY >= vh - 10 && scrollY < 2 * vh - 10) {
+          setActiveSection("collectie");
+        } else if (
+          scrollY >= 2 * vh - 10 ||
+          window.innerHeight + scrollY >= docHeight - 10
+        ) {
+          setActiveSection("contact");
+        }
       };
       window.addEventListener("scroll", handleScroll);
+      handleScroll();
     } else {
-      setScrolled(true);
+      setActiveSection("home");
     }
     return () => {
       clearTimeout(timer);
@@ -48,7 +63,9 @@ const Navbar = () => {
     <>
       <div
         className={`flex justify-between items-center py-4 px-8 fixed top-0 left-0 w-full z-20 transition-colors duration-500 ${
-          scrolled ? "bg-white text-black shadow" : "bg-transparent text-white"
+          activeSection !== "home"
+            ? "bg-white text-black shadow"
+            : "bg-transparent text-white"
         }`}
       >
         <h1
@@ -60,34 +77,46 @@ const Navbar = () => {
           className={`flex space-x-6 text-lg transition-all duration-700 ${slideMenu}`}
         >
           <li>
-            <NavLink
-              to="/"
-              className={({ isActive }) =>
-                `cursor-pointer ${isActive ? "font-bold underline" : "hover:scale-110 hover:underline"}`
-              }
+            <button
+              type="button"
+              className={`cursor-pointer ${activeSection === "home" ? "font-bold underline" : "hover:scale-110 hover:underline"}`}
+              onClick={() => {
+                window.scrollTo({
+                  top: 0,
+                  behavior: "smooth",
+                });
+              }}
             >
               Home
-            </NavLink>
+            </button>
           </li>
           <li>
-            <NavLink
-              to="/about"
-              className={({ isActive }) =>
-                `cursor-pointer ${isActive ? "font-bold underline" : "hover:scale-110 hover:underline"}`
-              }
+            <button
+              type="button"
+              className={`cursor-pointer ${activeSection === "collectie" ? "font-bold underline" : "hover:scale-110 hover:underline"}`}
+              onClick={() => {
+                window.scrollTo({
+                  top: window.innerHeight * 0.91,
+                  behavior: "smooth",
+                });
+              }}
             >
-              About
-            </NavLink>
+              Collectie
+            </button>
           </li>
           <li>
-            <NavLink
-              to="/contact"
-              className={({ isActive }) =>
-                `cursor-pointer ${isActive ? "font-bold underline" : "hover:scale-110 hover:underline"}`
-              }
+            <button
+              type="button"
+              className={`cursor-pointer ${activeSection === "contact" ? "font-bold underline" : "hover:scale-110 hover:underline"}`}
+              onClick={() => {
+                window.scrollTo({
+                  top: document.body.scrollHeight,
+                  behavior: "smooth",
+                });
+              }}
             >
               Contact
-            </NavLink>
+            </button>
           </li>
         </ul>
         <ul

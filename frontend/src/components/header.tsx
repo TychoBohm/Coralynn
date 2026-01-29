@@ -38,17 +38,19 @@ const Header = () => {
           Premium linen swimwear crafted for those who chase waves and wonder.
         </p>
         <button
-          className={`bg-white text-black py-2 rounded-md hover:bg-gray-300 hover:cursor-pointer transition-all duration-700 delay-300 ${
-            show ? "translate-x-0 opacity-100" : "-translate-x-32 opacity-0"
+          className={`bg-white text-black py-2 rounded-md hover:cursor-pointer transition-all   ${
+            show
+              ? "translate-x-0 opacity-100 hover:bg-gray-300 duration-700"
+              : "-translate-x-32 opacity-0 delay-300 "
           }`}
           onClick={() => {
             window.scrollTo({
-              top: window.innerHeight * 0.93,
+              top: window.innerHeight * 0.91,
               behavior: "smooth",
             });
           }}
         >
-          Shop Now
+          Ontdek het nu
         </button>
       </div>
     </div>
