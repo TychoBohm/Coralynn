@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Link } from "react-router";
 
 interface CartPopupProps {
   open: boolean;
@@ -111,9 +112,11 @@ const CartPopup: React.FC<CartPopupProps> = ({ open, onClose }) => {
             <span className="text-black">€--</span>
           </div>
           <div className="px-6 py-4">
-            <button className="w-full bg-[#DECDB7] text-black font-bold text-lg hover:cursor-pointer rounded py-2 transition hover:bg-[#d1c3a7]">
-              Afrekenen
-            </button>
+            <Link to="/checkout">
+              <button className="w-full bg-[#DECDB7] text-black font-bold text-lg hover:cursor-pointer rounded py-2 transition hover:bg-[#CBB89A]">
+                Afrekenen
+              </button>
+            </Link>
           </div>
         </div>
       </div>
