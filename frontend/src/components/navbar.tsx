@@ -91,7 +91,7 @@ const Navbar = () => {
           </li>
         </ul>
         <ul
-          className={`flex space-x-8 transition-all duration-700 ${slideIcons}`}
+          className={`flex space-x-8 transition-all duration-700  ${slideIcons}`}
         >
           <li>
             <Link to="/profile">
@@ -101,7 +101,7 @@ const Navbar = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="2"
                 stroke="currentColor"
-                className={`w-6 h-6 cursor-pointer hover:scale-110 transition-all hover:fill-white ${location.pathname === "/profile" ? "size-7 text-black fill-black" : ""}`}
+                className={`w-6 h-6 cursor-pointer hover:scale-110 hover:fill-white ${location.pathname === "/profile" ? "size-7 text-black fill-black" : ""}`}
               >
                 <path
                   strokeLinecap="round"
@@ -119,7 +119,7 @@ const Navbar = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="2"
                 stroke="currentColor"
-                className={`w-6 h-6 cursor-pointer hover:scale-110 transition-all hover:fill-white ${location.pathname === "/favorites" ? "size-7 text-black fill-black" : ""}`}
+                className={`w-6 h-6 cursor-pointer hover:scale-110 hover:fill-white ${location.pathname === "/favorites" ? "size-7 text-black fill-black" : ""}`}
               >
                 <path
                   strokeLinecap="round"
@@ -142,7 +142,7 @@ const Navbar = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="2"
                 stroke="currentColor"
-                className={`w-6 h-6 cursor-pointer hover:scale-110 transition-all hover:fill-white ${cartOpen ? "size-7 text-black fill-black" : ""}`}
+                className={`w-6 h-6 cursor-pointer hover:scale-110  hover:fill-white ${cartOpen ? "size-7 text-black fill-black" : ""}`}
               >
                 <path
                   strokeLinecap="round"

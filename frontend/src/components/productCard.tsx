@@ -26,7 +26,7 @@ const Card: React.FC<CardProps> = ({
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="currentColor"
-            className="size-7 hover:cursor-pointer hover:scale-110 transition-all hover:text-red-500 hover:fill-red-500"
+            className="size-7 hover:cursor-pointer hover:scale-110 transition-all hover:fill-black"
           >
             <path
               stroke-linecap="round"
@@ -40,7 +40,7 @@ const Card: React.FC<CardProps> = ({
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="currentColor"
-            className="size-7 hover:cursor-pointer hover:scale-110 transition-all hover:text-green-600 hover:fill-green-600"
+            className="size-7 hover:cursor-pointer hover:scale-110 transition-all hover:fill-black"
           >
             <path
               stroke-linecap="round"
