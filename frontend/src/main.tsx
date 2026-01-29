@@ -9,6 +9,7 @@ import { Routes, Route, Link } from "react-router-dom";
 import Product from "./pages/product";
 import Profile from "./pages/profile";
 import Wishlist from "./pages/wishList";
+import Checkout from "./pages/checkout";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -89,6 +90,7 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/product" element={<Product />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/checkout" element={<Checkout />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

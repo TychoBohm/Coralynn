@@ -5,7 +5,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 const Navbar = () => {
   const [show, setShow] = useState(false);
   const [activeSection, setActiveSection] = useState<
-    "home" | "collectie" | "contact"
+    "home" | "collectie" | "contact" | ""
   >("home");
   const location = useLocation();
   const navigate = useNavigate();
@@ -32,8 +32,6 @@ const Navbar = () => {
       };
       window.addEventListener("scroll", handleScroll);
       handleScroll();
-    } else {
-      setActiveSection("home");
     }
     return () => {
       clearTimeout(timer);
@@ -85,18 +83,20 @@ const Navbar = () => {
           className={`flex space-x-6 text-lg transition-all duration-700 ${slideMenu}`}
         >
           <li>
-            <button
-              type="button"
-              className={`cursor-pointer ${activeSection === "home" ? "font-bold underline" : "hover:scale-110 hover:underline"}`}
-              onClick={() => {
-                window.scrollTo({
-                  top: 0,
-                  behavior: "smooth",
-                });
-              }}
-            >
-              Home
-            </button>
+            <Link to="/">
+              <button
+                type="button"
+                className={`cursor-pointer ${location.pathname === "/" && activeSection === "home" ? "font-bold underline" : "hover:scale-110 hover:underline"}`}
+                onClick={() => {
+                  window.scrollTo({
+                    top: 0,
+                    behavior: "smooth",
+                  });
+                }}
+              >
+                Home
+              </button>
+            </Link>
           </li>
           <li>
             <button
@@ -141,7 +141,15 @@ const Navbar = () => {
           className={`flex space-x-8 transition-all duration-700  ${slideIcons}`}
         >
           <li>
-            <Link to="/profile">
+            <Link
+              to="/profile"
+              onClick={() => {
+                window.scrollTo({
+                  top: 0,
+                  behavior: "smooth",
+                });
+              }}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -159,7 +167,15 @@ const Navbar = () => {
             </Link>
           </li>
           <li>
-            <Link to="/wishlist">
+            <Link
+              to="/wishlist"
+              onClick={() => {
+                window.scrollTo({
+                  top: 0,
+                  behavior: "smooth",
+                });
+              }}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
