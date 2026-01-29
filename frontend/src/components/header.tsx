@@ -21,7 +21,7 @@ const Header = () => {
         autoPlay
         muted
       ></video>
-      <div className="absolute left-10 bottom-20 flex gap-2 flex-col">
+      <div className="absolute left-8 bottom-20 flex gap-2 flex-col">
         <h2
           className={`text-5xl font-bold text-white z-1 transition-all duration-700 ${
             show ? "translate-x-0 opacity-100" : "-translate-x-32 opacity-0"
