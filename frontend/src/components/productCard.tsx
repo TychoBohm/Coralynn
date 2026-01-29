@@ -9,18 +9,17 @@ type CardProps = {
   colors?: string[];
 };
 
-const Card: React.FC<CardProps> = ({
-  title,
-  description,
-  price,
-  imageUrl,
-}) => {
+const Card: React.FC<CardProps> = ({ title, description, price, imageUrl }) => {
   // Gebruik de meegegeven URL of val terug op placeholder
   const imageSrc = imageUrl || HerenWit;
   return (
     <div className="w-70  bg-white rounded-2xl shadow-md overflow-hidden flex flex-col justify-between">
       <div className="relative">
-        <img src={imageSrc} alt={title} className="w-full h-80 object-cover" />
+        <img
+          src={imageSrc}
+          alt={title}
+          className="w-full aspect-square object-cover"
+        />
         <div className="absolute top-4 right-4 flex flex-col gap-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"

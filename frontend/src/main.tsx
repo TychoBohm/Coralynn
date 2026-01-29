@@ -9,6 +9,7 @@ import Profile from "./pages/profile";
 import Wishlist from "./pages/wishList";
 import Checkout from "./pages/checkout";
 import Auth from "./pages/auth";
+import AdminProducts from "./pages/adminProducts";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -24,6 +25,14 @@ createRoot(document.getElementById("root")!).render(
             element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/products"
+            element={
+              <ProtectedRoute>
+                <AdminProducts />
               </ProtectedRoute>
             }
           />

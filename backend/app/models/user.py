@@ -1,5 +1,5 @@
 # user model
-from sqlalchemy import Column, String, DateTime
+from sqlalchemy import Column, String, DateTime, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from app.db.database import Base
@@ -14,6 +14,7 @@ class User(Base):
     hashed_password = Column(String(255), nullable=False)
     phone_number = Column(String(20), nullable=True)  # optioneel
     address = Column(String(500), nullable=True)  # optioneel
+    is_superuser = Column(Boolean, default=False, nullable=False)  # admin rechten
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 

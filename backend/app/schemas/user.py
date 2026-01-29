@@ -31,11 +31,17 @@ class UserLogin(BaseModel):
 class UserResponse(UserBase):
     # wat we terugsturen (zonder wachtwoord)
     id: UUID
+    is_superuser: bool = False
     created_at: datetime
     updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
+
+
+class SetSuperuser(BaseModel):
+    # voor admin om superuser status te wijzigen
+    is_superuser: bool
 
 
 class Token(BaseModel):
