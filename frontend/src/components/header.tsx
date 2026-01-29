@@ -23,7 +23,7 @@ const Header = () => {
       ></video>
       <div className="absolute left-10 bottom-20 flex gap-2 flex-col">
         <h2
-          className={`text-5xl font-bold text-white z-10 transition-all duration-700 ${
+          className={`text-5xl font-bold text-white z-1 transition-all duration-700 ${
             show ? "translate-x-0 opacity-100" : "-translate-x-32 opacity-0"
           }`}
         >
@@ -31,7 +31,7 @@ const Header = () => {
           <br /> Worn by You.
         </h2>
         <p
-          className={`text-lg w-[40ch] text-white z-10 transition-all duration-700 delay-200 ${
+          className={`text-lg w-[40ch] text-white z-1 transition-all duration-700 delay-200 ${
             show ? "translate-x-0 opacity-100" : "-translate-x-32 opacity-0"
           }`}
         >

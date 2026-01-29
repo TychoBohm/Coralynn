@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
+import CartPopup from "./cartpopup";
 import { NavLink, Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [show, setShow] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const [cartOpen, setCartOpen] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setShow(true), 300);
     let handleScroll: (() => void) | null = null;
     if (location.pathname === "/") {
       handleScroll = () => {
-        setScrolled(window.scrollY >= window.innerHeight * 0.8);
+        setScrolled(window.scrollY >= window.innerHeight * 0.5);
       };
       window.addEventListener("scroll", handleScroll);
     } else {
@@ -23,7 +25,6 @@ const Navbar = () => {
     };
   }, [location.pathname]);
 
-  // Slide-in animatie alleen op homepage
   const slideTitle =
     location.pathname === "/"
       ? show
@@ -44,109 +45,117 @@ const Navbar = () => {
       : "translate-x-0 opacity-100";
 
   return (
-    <div
-      className={`flex justify-between items-center py-4 px-8 fixed top-0 left-0 w-full z-20 transition-colors duration-500 ${
-        scrolled ? "bg-white text-black shadow" : "bg-transparent text-white"
-      }`}
-    >
-      <h1
-        className={`text-3xl font-bold transition-all duration-700 ${slideTitle}`}
+    <>
+      <div
+        className={`flex justify-between items-center py-4 px-8 fixed top-0 left-0 w-full z-20 transition-colors duration-500 ${
+          scrolled ? "bg-white text-black shadow" : "bg-transparent text-white"
+        }`}
       >
-        CORALYNN
-      </h1>
-      <ul
-        className={`flex space-x-6 text-lg transition-all duration-700 ${slideMenu}`}
-      >
-        <li>
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-              `cursor-pointer ${isActive ? "font-bold underline" : "hover:scale-110 hover:underline"}`
-            }
-          >
-            Home
-          </NavLink>
-        </li>
-        <li>
-          <NavLink
-            to="/about"
-            className={({ isActive }) =>
-              `cursor-pointer ${isActive ? "font-bold underline" : "hover:scale-110 hover:underline"}`
-            }
-          >
-            About
-          </NavLink>
-        </li>
-        <li>
-          <NavLink
-            to="/contact"
-            className={({ isActive }) =>
-              `cursor-pointer ${isActive ? "font-bold underline" : "hover:scale-110 hover:underline"}`
-            }
-          >
-            Contact
-          </NavLink>
-        </li>
-      </ul>
-      <ul
-        className={`flex space-x-8 transition-all duration-700 ${slideIcons}`}
-      >
-        <li>
-          <Link to="/profile">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="2"
-              stroke="currentColor"
-              className={`w-6 h-6 cursor-pointer hover:scale-110 transition-all hover:text-blue-500 hover:fill-blue-500 ${location.pathname === "/profile" ? "size-7 text-black fill-black" : ""}`}
+        <h1
+          className={`text-3xl font-bold transition-all duration-700 ${slideTitle}`}
+        >
+          CORALYNN
+        </h1>
+        <ul
+          className={`flex space-x-6 text-lg transition-all duration-700 ${slideMenu}`}
+        >
+          <li>
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `cursor-pointer ${isActive ? "font-bold underline" : "hover:scale-110 hover:underline"}`
+              }
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
-              />
-            </svg>
-          </Link>
-        </li>
-        <li>
-          <Link to="/favorites">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="2"
-              stroke="currentColor"
-              className={`w-6 h-6 cursor-pointer hover:scale-110 transition-all hover:text-red-500 hover:fill-red-500 ${location.pathname === "/favorites" ? "size-7 text-black fill-black" : ""}`}
+              Home
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/about"
+              className={({ isActive }) =>
+                `cursor-pointer ${isActive ? "font-bold underline" : "hover:scale-110 hover:underline"}`
+              }
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
-              />
-            </svg>
-          </Link>
-        </li>
-        <li>
-          <Link to="/cart">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="2"
-              stroke="currentColor"
-              className={`w-6 h-6 cursor-pointer hover:scale-110 transition-all hover:text-green-500 hover:fill-green-500 ${location.pathname === "/cart" ? "size-7 text-black fill-black" : ""}`}
+              About
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/contact"
+              className={({ isActive }) =>
+                `cursor-pointer ${isActive ? "font-bold underline" : "hover:scale-110 hover:underline"}`
+              }
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-              />
-            </svg>
-          </Link>
-        </li>
-      </ul>
-    </div>
+              Contact
+            </NavLink>
+          </li>
+        </ul>
+        <ul
+          className={`flex space-x-8 transition-all duration-700 ${slideIcons}`}
+        >
+          <li>
+            <Link to="/profile">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+                className={`w-6 h-6 cursor-pointer hover:scale-110 transition-all hover:fill-white ${location.pathname === "/profile" ? "size-7 text-black fill-black" : ""}`}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+                />
+              </svg>
+            </Link>
+          </li>
+          <li>
+            <Link to="/favorites">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+                className={`w-6 h-6 cursor-pointer hover:scale-110 transition-all hover:fill-white ${location.pathname === "/favorites" ? "size-7 text-black fill-black" : ""}`}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+                />
+              </svg>
+            </Link>
+          </li>
+          <li>
+            <button
+              type="button"
+              aria-label="Winkelwagen openen"
+              onClick={() => setCartOpen(true)}
+              className="bg-transparent border-none p-0 m-0"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+                className={`w-6 h-6 cursor-pointer hover:scale-110 transition-all hover:fill-white ${cartOpen ? "size-7 text-black fill-black" : ""}`}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+                />
+              </svg>
+            </button>
+          </li>
+        </ul>
+      </div>
+      <CartPopup open={cartOpen} onClose={() => setCartOpen(false)} />
+    </>
   );
 };
 
