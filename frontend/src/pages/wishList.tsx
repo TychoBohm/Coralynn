@@ -66,11 +66,13 @@ const Wishlist = () => {
       <div className="fixed top-0 left-0 right-0 z-10">
         <Navbar />
       </div>
-      <section className="min-h-screen px-20">
-        <div className="pt-30 flex justify-between">
+      <section className="min-h-screen px-4 md:px-10 lg:px-20">
+        <div className="pt-24 md:pt-30 flex justify-between">
           <div>
-            <h2 className="text-4xl font-extrabold">Jou favorieten</h2>
-            <p className="text-2xl font-light mt-2">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold">
+              Jou favorieten
+            </h2>
+            <p className="text-lg sm:text-xl md:text-2xl font-light mt-2">
               Bewaar hier jou favorieten items
             </p>
           </div>

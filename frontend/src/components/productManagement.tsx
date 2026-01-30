@@ -155,9 +155,9 @@ const ProductManagement = () => {
   }
 
   return (
-    <section className="p-5">
-      <div className="flex justify-between items-center mb-8">
-        <h2 className="text-3xl font-bold">Product Beheer</h2>
+    <section className="p-4 md:p-5">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 md:mb-8">
+        <h2 className="text-2xl md:text-3xl font-bold">Product Beheer</h2>
         <button
           onClick={() => {
             setShowForm(!showForm);
@@ -184,8 +184,10 @@ const ProductManagement = () => {
 
       {/* Product Form - alleen voor nieuw product */}
       {showForm && !editingProduct && (
-        <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-          <h2 className="text-xl font-semibold mb-4">Nieuw Product</h2>
+        <div className="bg-white p-4 md:p-6 rounded-lg shadow-md mb-6 md:mb-8">
+          <h2 className="text-lg md:text-xl font-semibold mb-4">
+            Nieuw Product
+          </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-1">Titel</label>
@@ -277,9 +279,9 @@ const ProductManagement = () => {
             key={product.id}
             className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
           >
-            <div className="flex">
+            <div className="flex flex-col sm:flex-row">
               {/* Product Image */}
-              <div className="relative w-48 h-48 bg-gray-100 shrink-0">
+              <div className="relative w-full h-48 sm:w-32 sm:h-32 md:w-48 md:h-48 bg-gray-100 shrink-0">
                 {product.images[0] ? (
                   <img
                     src={product.images[0].image_url}
@@ -307,26 +309,26 @@ const ProductManagement = () => {
               </div>
 
               {/* Product Info */}
-              <div className="flex-1 p-5 flex flex-col justify-between">
+              <div className="flex-1 p-4 md:p-5 flex flex-col justify-between">
                 <div>
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-semibold text-xl text-gray-800">
+                  <div className="flex flex-col sm:flex-row justify-between items-start gap-2 sm:gap-0 mb-2">
+                    <h3 className="font-semibold text-lg md:text-xl text-gray-800">
                       {product.title}
                     </h3>
-                    <span className="bg-[#DECDB7] px-4 py-1 rounded-full font-bold text-gray-800">
+                    <span className="bg-[#DECDB7] px-3 md:px-4 py-1 rounded-full font-bold text-gray-800 text-sm md:text-base">
                       €{Number(product.price).toFixed(2)}
                     </span>
                   </div>
-                  <p className="text-gray-500 line-clamp-2">
+                  <p className="text-gray-500 line-clamp-2 text-sm md:text-base">
                     {product.description || "Geen beschrijving"}
                   </p>
                 </div>
 
                 {/* Actions */}
-                <div className="flex gap-3 mt-4">
+                <div className="flex flex-wrap gap-2 md:gap-3 mt-4">
                   <button
                     onClick={() => handleEdit(product)}
-                    className="bg-[#DECDB7] text-gray-800 py-2 px-6 rounded-lg hover:bg-[#CBB89A] transition-colors cursor-pointer flex items-center gap-2"
+                    className="bg-[#DECDB7] text-gray-800 py-2 px-4 md:px-6 rounded-lg hover:bg-[#CBB89A] transition-colors cursor-pointer flex items-center gap-2 text-sm md:text-base"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -346,7 +348,7 @@ const ProductManagement = () => {
                   </button>
                   <button
                     onClick={() => handleDelete(product.id)}
-                    className="bg-red-50 text-red-600 py-2 px-4 rounded-lg hover:bg-red-100 transition-colors cursor-pointer flex items-center gap-2"
+                    className="bg-red-50 text-red-600 py-2 px-3 md:px-4 rounded-lg hover:bg-red-100 transition-colors cursor-pointer flex items-center gap-2 text-sm md:text-base"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -370,7 +372,7 @@ const ProductManagement = () => {
 
             {/* Edit Form (slides down when editing) */}
             {editingProductId === product.id && (
-              <div className="border-t bg-gray-50 p-5">
+              <div className="border-t bg-gray-50 p-4 md:p-5">
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="flex justify-between items-center mb-2">
                     <h4 className="font-semibold text-gray-700">Bewerken</h4>
@@ -456,7 +458,7 @@ const ProductManagement = () => {
                             <img
                               src={url}
                               alt={`Preview ${i + 1}`}
-                              className="w-16 h-16 object-cover rounded-lg"
+                              className="w-25 h-25 object-cover rounded-lg"
                             />
                             <button
                               type="button"
@@ -465,9 +467,22 @@ const ProductManagement = () => {
                                   imageUrls.filter((_, idx) => idx !== i),
                                 )
                               }
-                              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+                              className="absolute -top-2 -right-2 text-white rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
                             >
-                              ×
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="2.3"
+                                stroke="currentColor"
+                                className="size-6 bg-red-500 rounded-full"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M6 18 18 6M6 6l12 12"
+                                />
+                              </svg>
                             </button>
                           </div>
                         ))}
@@ -489,7 +504,7 @@ const ProductManagement = () => {
       </div>
 
       {products.length === 0 && (
-        <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
+        <div className="bg-white rounded-2xl shadow-lg p-6 md:p-12 text-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

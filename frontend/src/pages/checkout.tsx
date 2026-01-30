@@ -5,18 +5,18 @@ const Checkout = () => {
   const [shipping, setShipping] = useState("bezorgen");
   return (
     <>
-      <nav className="fixed py-6 px-28 flex items-center justify-between w-full z-10 bg-white shadow">
-        <h1 className="text-3xl font-bold ">CORALYNN</h1>
+      <nav className="fixed py-4 md:py-6 px-4 md:px-28 flex items-center justify-between w-full z-10 bg-white shadow">
+        <h1 className="text-xl md:text-3xl font-bold">CORALYNN</h1>
         <Link to="/">
-          <p className="font-light">Ga terug</p>
+          <p className="font-light text-sm md:text-base">Ga terug</p>
         </Link>
       </nav>
-      <section className="h-screen flex">
-        <div className="w-1/2 flex flex-col px-20 py-8 justify-center">
-          <h2 className="font-bold text-2xl mb-6">Checkout</h2>
+      <section className="min-h-screen flex flex-col lg:flex-row">
+        <div className="w-full lg:w-1/2 flex flex-col px-4 md:px-10 lg:px-20 py-8 pt-20 md:pt-24 lg:pt-8 lg:justify-center">
+          <h2 className="font-bold text-xl md:text-2xl mb-6">Checkout</h2>
           <form className="space-y-2 flex flex-col justify-start">
             <div>
-              <label className="font-medium">
+              <label className="font-medium text-sm md:text-base">
                 {shipping === "bezorgen" ? (
                   <>
                     Verzendinformatie<span className="text-red-500">*</span>
@@ -99,7 +99,7 @@ const Checkout = () => {
               />
             </div>
             {shipping === "bezorgen" ? (
-              <div className="flex gap-2 mt-1">
+              <div className="flex flex-col sm:flex-row gap-2 mt-1">
                 <div className="flex-1">
                   <label className="block text-sm font-medium">
                     Stad<span className="text-red-500">*</span>
@@ -157,10 +157,10 @@ const Checkout = () => {
           </form>
         </div>
 
-        <div className="w-1/2 bg-[#E3F2FF] flex flex-col px-20 py-8 justify-center">
-          <div className="bg-transparent rounded-lg flex flex-col h-full justify-center pt-15">
+        <div className="w-full lg:w-1/2 bg-[#E3F2FF] flex flex-col px-4 md:px-10 lg:px-20 py-8 justify-center">
+          <div className="bg-transparent rounded-lg flex flex-col h-full justify-center lg:pt-15">
             <h3 className="font-medium mb-6">Winkelmand controleren</h3>
-            <div className="space-y-4 mb-6 overflow-y-auto h-50">
+            <div className="space-y-4 mb-6 overflow-y-auto max-h-60 lg:h-50">
               <div className="flex gap-4 items-center">
                 <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center">
                   <img

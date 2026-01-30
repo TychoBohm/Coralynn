@@ -29,12 +29,14 @@ const CartPopup: React.FC<CartPopupProps> = ({ open, onClose }) => {
     >
       <div
         id="cart-popup"
-        className={`fixed top-0 right-0 h-full w-110 bg-white shadow-lg z-50 transition-transform duration-300 flex flex-col ${open ? "translate-x-0" : "translate-x-full"}`}
+        className={`fixed top-0 right-0 h-full w-full sm:w-96 md:w-110 bg-white shadow-lg z-50 transition-transform duration-300 flex flex-col ${open ? "translate-x-0" : "translate-x-full"}`}
         style={{ overflowX: "hidden", touchAction: "pan-y" }}
       >
         {/* Header met terugknop */}
-        <div className="flex items-center justify-between px-6 pt-3 pb-3">
-          <h2 className="text-2xl font-bold text-black">Winkelwagen</h2>
+        <div className="flex items-center justify-between px-4 sm:px-6 pt-3 pb-3">
+          <h2 className="text-xl sm:text-2xl font-bold text-black">
+            Winkelwagen
+          </h2>
 
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -54,7 +56,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ open, onClose }) => {
         </div>
         {/* Cart items */}
         <div
-          className="flex-1 overflow-y-auto px-6 py-2 text-black"
+          className="flex-1 overflow-y-auto px-4 sm:px-6 py-2 text-black"
           style={{
             overflowX: "hidden",
             WebkitOverflowScrolling: "touch",
@@ -74,22 +76,22 @@ const CartPopup: React.FC<CartPopupProps> = ({ open, onClose }) => {
                 <img
                   src={item.imageUrl || "https://via.placeholder.com/200"}
                   alt={item.title}
-                  className="w-24 h-24 object-cover mr-4"
+                  className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-cover mr-3 sm:mr-4 rounded"
                 />
-                <div className="flex-1 flex flex-col justify-between text-black">
+                <div className="flex-1 flex flex-col justify-between text-black min-w-0">
                   <div>
-                    <div className="flex justify-between items-center text-black">
-                      <span className="font-semibold text-black">
+                    <div className="flex justify-between items-start gap-2 text-black">
+                      <span className="font-semibold text-black text-sm sm:text-base truncate">
                         {item.title}
                       </span>
-                      <span className="font-semibold text-black">
+                      <span className="font-semibold text-black text-sm sm:text-base whitespace-nowrap">
                         € {item.price.toFixed(2).replace(".", ",")}
                       </span>
                     </div>
-                    <div className="text-black text-sm truncate mb-1">
+                    <div className="text-black text-xs sm:text-sm truncate mb-1">
                       {item.description}
                     </div>
-                    <div className="text-black text-sm mb-2">
+                    <div className="text-black text-xs sm:text-sm mb-2">
                       Maat: {item.size}
                     </div>
                     <div className="flex items-center gap-2">
@@ -134,13 +136,13 @@ const CartPopup: React.FC<CartPopupProps> = ({ open, onClose }) => {
         </div>
         {/* Footer */}
         <div className="border-t bg-white text-black">
-          <div className="px-6 py-2 text-sm font-bold text-black border-b">
+          <div className="px-4 sm:px-6 py-2 text-sm font-bold text-black border-b">
             Gratis verzending!
           </div>
-          <div className="flex justify-end items-center px-6 py-2 text-sm text-black">
+          <div className="flex justify-end items-center px-4 sm:px-6 py-2 text-sm text-black">
             <span className="text-black">Subtotaal</span>
           </div>
-          <div className="flex justify-between items-center px-6 py-2 text-xs text-black">
+          <div className="flex justify-between items-center px-4 sm:px-6 py-2 text-xs text-black">
             <span className="text-black">
               {totalItems} {totalItems === 1 ? "item" : "items"}
             </span>
@@ -148,7 +150,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ open, onClose }) => {
               €{subtotal.toFixed(2).replace(".", ",")}
             </span>
           </div>
-          <div className="px-6 py-4">
+          <div className="px-4 sm:px-6 py-4">
             <Link to="/checkout">
               <button
                 className="w-full bg-[#DECDB7] text-black font-bold text-lg hover:cursor-pointer rounded py-2 transition hover:bg-[#CBB89A] disabled:opacity-50 disabled:cursor-not-allowed"

@@ -10,7 +10,7 @@ const Auth = () => {
   return (
     <>
       <Navbar />
-      <section className="h-screen flex flex-col items-center justify-center">
+      <section className="min-h-screen flex flex-col items-center justify-center pt-20 md:pt-16 px-4">
         {showLogin ? (
           <Login onSwitch={handleSwitch} />
         ) : (

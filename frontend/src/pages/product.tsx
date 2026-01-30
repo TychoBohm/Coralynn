@@ -67,15 +67,15 @@ const Product = () => {
       <div className="fixed top-0 left-0 w-full p-4 z-10">
         <Navbar />
       </div>
-      <section className="h-screen pt-30 flex gap-8 justify-center px-20">
-        {/* kleine thumbnails links */}
-        <div className="flex flex-col gap-4 max-h-[520px] overflow-y-auto">
+      <section className="min-h-screen pt-24 md:pt-30 flex flex-col lg:flex-row gap-4 md:gap-8 justify-center px-4 md:px-10 lg:px-20 pb-10">
+        {/* kleine thumbnails - horizontaal op mobile, verticaal op desktop */}
+        <div className="flex lg:flex-col gap-2 md:gap-4 max-w-full lg:max-h-[520px] overflow-x-auto lg:overflow-x-visible lg:overflow-y-auto order-2 lg:order-1">
           {sortedImages.map((img, index) => (
             <img
               key={img.id}
               src={img.image_url}
               alt={`${product.title} ${index + 1}`}
-              className={`w-48 h-48 object-cover cursor-pointer border-2 rounded shrink-0 ${
+              className={`w-16 h-16 sm:w-20 sm:h-20 md:w-32 md:h-32 lg:w-48 lg:h-48 object-cover cursor-pointer border-2 rounded shrink-0 ${
                 selectedImage === index ? "border-black" : "border-transparent"
               }`}
               onClick={() => setSelectedImage(index)}
@@ -84,23 +84,21 @@ const Product = () => {
         </div>
 
         {/* grote afbeelding */}
-        <div>
+        <div className="order-1 lg:order-2 flex justify-center">
           {mainImage && (
             <img
               src={mainImage}
               alt={product.title}
-              className="w-130 h-130 object-cover rounded"
+              className="w-full max-w-[300px] sm:max-w-[400px] md:max-w-[500px] lg:w-[520px] aspect-square object-cover rounded"
             />
           )}
         </div>
 
         {/* product info */}
-        <div className="flex flex-col justify-evenly mb-25">
+        <div className="flex flex-col gap-6 lg:justify-evenly lg:mb-25 order-3">
           <div>
-            <h2 className="text-2xl font-medium justify-start">
-              {product.title}
-            </h2>
-            <p className="w-[50ch]">
+            <h2 className="text-xl sm:text-2xl font-medium">{product.title}</h2>
+            <p className="max-w-[50ch] text-sm sm:text-base mt-2">
               {product.description || "Geen beschrijving beschikbaar"}
             </p>
             <p className="text-lg font-bold mt-4">
@@ -108,7 +106,7 @@ const Product = () => {
             </p>
           </div>
           <div className="flex flex-col">
-            <h3 className="text-xl font-medium mt-4">Kies je maat</h3>
+            <h3 className="text-lg sm:text-xl font-medium">Kies je maat</h3>
             <select
               className="border border-gray-300 rounded-md p-2 mt-2 mb-4 w-32"
               value={selectedSize}
@@ -120,7 +118,7 @@ const Product = () => {
               <option value="xl">XL</option>
             </select>
             <button
-              className="bg-[#DECDB7] text-white px-6 py-3 rounded-md hover:bg-[#CBB89A] hover:cursor-pointer transition-colors"
+              className="bg-[#DECDB7] text-white px-6 py-3 rounded-md hover:bg-[#CBB89A] hover:cursor-pointer transition-colors w-full sm:w-auto"
               onClick={() => {
                 const imageUrl = sortedImages[0]?.image_url || "";
                 addToCart({

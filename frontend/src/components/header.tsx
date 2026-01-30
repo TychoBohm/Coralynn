@@ -21,9 +21,9 @@ const Header = () => {
         autoPlay
         muted
       ></video>
-      <div className="absolute left-8 bottom-20 flex gap-2 flex-col">
+      <div className="absolute left-4 right-4 md:left-8 md:right-auto bottom-20 flex gap-2 flex-col">
         <h2
-          className={`text-5xl font-bold text-white z-1 transition-all duration-700 ${
+          className={`text-3xl sm:text-4xl md:text-5xl font-bold text-white z-1 transition-all duration-700 ${
             show ? "translate-x-0 opacity-100" : "-translate-x-32 opacity-0"
           }`}
         >
@@ -31,14 +31,14 @@ const Header = () => {
           <br /> Worn by You.
         </h2>
         <p
-          className={`text-lg w-[40ch] text-white z-1 transition-all duration-700 delay-200 ${
+          className={`text-base md:text-lg max-w-[40ch] text-white z-1 transition-all duration-700 delay-200 ${
             show ? "translate-x-0 opacity-100" : "-translate-x-32 opacity-0"
           }`}
         >
           Premium linen swimwear crafted for those who chase waves and wonder.
         </p>
         <button
-          className={`bg-white text-black py-2 rounded-md hover:cursor-pointer transition-all   ${
+          className={`bg-white text-black py-2 rounded-md hover:cursor-pointer transition-all ${
             show
               ? "translate-x-0 opacity-100 hover:bg-gray-300 duration-700"
               : "-translate-x-32 opacity-0 delay-300 "

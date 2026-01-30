@@ -34,13 +34,15 @@ const LoginForm = ({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] w-full">
+    <div className="flex flex-col items-center justify-center min-h-[60vh] w-full px-4">
       <form
         className="flex flex-col items-center w-full max-w-md"
         onSubmit={handleSubmit}
       >
-        <h2 className="text-center font-bold text-2xl mb-4">Login</h2>
-        <p className="text-base text-center mb-6 text-gray-500">
+        <h2 className="text-center font-bold text-xl sm:text-2xl mb-4">
+          Login
+        </h2>
+        <p className="text-sm sm:text-base text-center mb-6 text-gray-500">
           Voer alsjeblieft je e-mail en wachtwoord in
         </p>
 
