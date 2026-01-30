@@ -31,7 +31,7 @@ const Card: React.FC<CardProps> = ({
   };
 
   return (
-    <div className="w-70  bg-white rounded-2xl shadow-md overflow-hidden flex flex-col justify-between">
+    <div className="w-56 sm:w-64 md:w-70 bg-white rounded-2xl shadow-md overflow-hidden flex flex-col justify-between">
       <div className="relative">
         <img
           src={imageSrc}

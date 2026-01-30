@@ -83,15 +83,17 @@ const Home = () => {
   return (
     <>
       <Header />
-      <section className="px-8 h-screen">
-        <div className="pt-10">
-          <h2 className="text-4xl font-extrabold">Onze Collectie</h2>
-          <p className="text-2xl font-light mt-2">
+      <section className="px-4 md:px-8 py-10">
+        <div>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold">
+            Onze Collectie
+          </h2>
+          <p className="text-lg sm:text-xl md:text-2xl font-light mt-2">
             Ontdek onze exclusieve linnen zwemkleding
           </p>
         </div>
         <div
-          className="flex gap-8 pb-6 pt-6 overflow-x-auto flex-nowrap"
+          className="flex gap-4 md:gap-8 py-6 overflow-x-auto flex-nowrap"
           style={{ WebkitOverflowScrolling: "touch" }}
         >
           {loading ? (
