@@ -53,17 +53,28 @@ export interface RegisterData {
   email: string;
   password: string;
   phone_number?: string;
-  address?: string;
+  name?: string;
 }
 
 export interface User {
   id: string;
   email: string;
   phone_number: string | null;
-  address: string | null;
+  name: string | null;
   is_superuser: boolean;
+  shipping_city: string | null;
+  shipping_street: string | null;
+  shipping_postal_code: string | null;
   created_at: string;
   updated_at: string | null;
+}
+
+export interface UserUpdateData {
+  phone_number?: string | null;
+  name?: string | null;
+  shipping_city?: string | null;
+  shipping_street?: string | null;
+  shipping_postal_code?: string | null;
 }
 
 export interface TokenResponse {
@@ -93,6 +104,14 @@ export async function register(data: RegisterData): Promise<User> {
 // haal huidige user op
 export async function getCurrentUser(): Promise<User> {
   return fetchFromApi('/api/auth/me');
+}
+
+// update user profiel
+export async function updateUser(data: UserUpdateData): Promise<User> {
+  return fetchFromApi('/api/auth/me', {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
 }
 
 // logout

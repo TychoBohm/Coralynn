@@ -6,7 +6,7 @@ const RegisterForm = ({ onSwitch }: { onSwitch?: () => void }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [address, setAddress] = useState("");
+  const [name, setName] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -28,7 +28,7 @@ const RegisterForm = ({ onSwitch }: { onSwitch?: () => void }) => {
         email,
         password,
         phone_number: phoneNumber || undefined,
-        address: address || undefined,
+        name: name || undefined,
       });
       setSuccess(true);
       // na 2 sec naar login switchen
@@ -85,17 +85,17 @@ const RegisterForm = ({ onSwitch }: { onSwitch?: () => void }) => {
           className="mb-4 w-full border border-gray-300 rounded px-4 py-3 text-base focus:outline-none"
         />
         <input
+          type="text"
+          placeholder="Naam (optioneel)"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="mb-4 w-full border border-gray-300 rounded px-4 py-3 text-base focus:outline-none"
+        />
+        <input
           type="tel"
           placeholder="Telefoonnummer (optioneel)"
           value={phoneNumber}
           onChange={(e) => setPhoneNumber(e.target.value)}
-          className="mb-4 w-full border border-gray-300 rounded px-4 py-3 text-base focus:outline-none"
-        />
-        <input
-          type="text"
-          placeholder="Adres (optioneel)"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
           className="mb-4 w-full border border-gray-300 rounded px-4 py-3 text-base focus:outline-none"
         />
         <input
@@ -117,7 +117,7 @@ const RegisterForm = ({ onSwitch }: { onSwitch?: () => void }) => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-[#DECDB7] hover:bg-[#CBB89A] cursor-pointer duration-100 transition-all text-black font-semibold rounded py-3 mb-3 mt-2 text-lg disabled:opacity-50"
+          className="w-full bg-[#D4B896] hover:bg-[#C4A57A] cursor-pointer duration-100 transition-all text-black font-semibold rounded py-3 mb-3 mt-2 text-lg disabled:opacity-50"
         >
           {loading ? "Bezig..." : "Registreer"}
         </button>

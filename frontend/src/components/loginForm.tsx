@@ -4,9 +4,11 @@ import { login } from "../api/api";
 const LoginForm = ({
   onSwitch,
   onSuccess,
+  returnTo,
 }: {
   onSwitch?: () => void;
   onSuccess?: () => void;
+  returnTo?: string;
 }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,6 +25,8 @@ const LoginForm = ({
       // login gelukt, redirect of callback
       if (onSuccess) {
         onSuccess();
+      } else if (returnTo) {
+        window.location.href = returnTo;
       } else {
         window.location.href = "/";
       }
@@ -71,7 +75,7 @@ const LoginForm = ({
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-[#DECDB7] hover:bg-[#CBB89A] cursor-pointer duration-100 transition-all text-black font-semibold rounded py-3 mb-3 mt-2 text-lg disabled:opacity-50"
+          className="w-full bg-[#D4B896] hover:bg-[#C4A57A] cursor-pointer duration-100 transition-all text-black font-semibold rounded py-3 mb-3 mt-2 text-lg disabled:opacity-50"
         >
           {loading ? "Bezig..." : "Login"}
         </button>
