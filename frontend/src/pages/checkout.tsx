@@ -224,7 +224,7 @@ const Checkout = () => {
                 />
                 <button
                   type="button"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-blue-500 text-sm font-medium px-2 py-1 cursor-pointer hover:underline"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-[#3A7BBF] text-sm font-medium px-2 py-1 cursor-pointer hover:underline"
                   style={{ minWidth: "auto" }}
                 >
                   Toevoegen
@@ -246,7 +246,7 @@ const Checkout = () => {
                 <span>€--</span>
               </div>
             </div>
-            <button className="w-full bg-[#DECDB7] hover:bg-[#CBB89A] cursor-pointer transition-colors duration-100 text-lg font-medium rounded-lg py-2 mt-2">
+            <button className="w-full bg-[#D4B896] hover:bg-[#c9ad87] cursor-pointer transition-colors duration-100 text-lg font-medium rounded-lg py-2 mt-2">
               Betaal
             </button>
           </div>

@@ -16,7 +16,7 @@ const Bestelgeschiedenis = () => {
             <p>Aantal: 1</p>
             <p>Prijs: €--,--</p>
             <p>Besteld op: </p>
-            <button className="bg-[#DECDB7] text-white px-6 py-2 rounded-md hover:bg-[#CBB89A] hover:cursor-pointer transition-colors">
+            <button className="bg-[#D4B896] text-white px-6 py-2 rounded-md hover:bg-[#c9ad87] hover:cursor-pointer transition-colors">
               Voeg toe aan winkelwagen
             </button>
           </div>
@@ -32,7 +32,7 @@ const Bestelgeschiedenis = () => {
             <p>Aantal: 1</p>
             <p>Prijs: €--,--</p>
             <p>Besteld op: </p>
-            <button className="bg-[#DECDB7] text-white px-6 py-2 rounded-md hover:bg-[#CBB89A] hover:cursor-pointer transition-colors">
+            <button className="bg-[#D4B896] text-white px-6 py-2 rounded-md hover:bg-[#c9ad87] hover:cursor-pointer transition-colors">
               Voeg toe aan winkelwagen
             </button>
           </div>
@@ -48,7 +48,7 @@ const Bestelgeschiedenis = () => {
             <p>Aantal: 1</p>
             <p>Prijs: €--,--</p>
             <p>Besteld op: </p>
-            <button className="bg-[#DECDB7] text-white px-6 py-2 rounded-md hover:bg-[#CBB89A] hover:cursor-pointer transition-colors">
+            <button className="bg-[#D4B896] text-white px-6 py-2 rounded-md hover:bg-[#c9ad87] hover:cursor-pointer transition-colors">
               Voeg toe aan winkelwagen
             </button>
           </div>
@@ -64,7 +64,7 @@ const Bestelgeschiedenis = () => {
             <p>Aantal: 1</p>
             <p>Prijs: €--,--</p>
             <p>Besteld op: </p>
-            <button className="bg-[#DECDB7] text-white px-6 py-2 rounded-md hover:bg-[#CBB89A] hover:cursor-pointer transition-colors">
+            <button className="bg-[#D4B896] text-white px-6 py-2 rounded-md hover:bg-[#c9ad87] hover:cursor-pointer transition-colors">
               Voeg toe aan winkelwagen
             </button>
           </div>
