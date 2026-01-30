@@ -202,3 +202,34 @@ export async function uploadImage(file: File): Promise<{ filename: string; url: 
 
   return response.json();
 }
+
+// ============ WISHLIST FUNCTIES ============
+
+// haal wishlist op (producten)
+export async function getWishlist(): Promise<Product[]> {
+  return fetchFromApi('/api/wishlist');
+}
+
+// haal alle product ids in wishlist op
+export async function getWishlistIds(): Promise<string[]> {
+  return fetchFromApi('/api/wishlist/ids');
+}
+
+// voeg product toe aan wishlist
+export async function addToWishlist(productId: string): Promise<{ message: string }> {
+  return fetchFromApi(`/api/wishlist/${productId}`, {
+    method: 'POST',
+  });
+}
+
+// verwijder product uit wishlist
+export async function removeFromWishlist(productId: string): Promise<{ message: string }> {
+  return fetchFromApi(`/api/wishlist/${productId}`, {
+    method: 'DELETE',
+  });
+}
+
+// check of product in wishlist staat
+export async function checkInWishlist(productId: string): Promise<{ in_wishlist: boolean }> {
+  return fetchFromApi(`/api/wishlist/check/${productId}`);
+}
