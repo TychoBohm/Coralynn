@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import Header from "../components/header";
-import Footer from "../components/footer";
 import { useAuth } from "../context/AuthContext";
 import {
   getProducts,
@@ -14,13 +11,8 @@ import {
 } from "../api/api";
 import type { Product, ProductCreate, ProductUpdate } from "../api/api";
 
-interface AdminProductsProps {
-  embedded?: boolean;
-}
-
-const AdminProducts = ({ embedded = false }: AdminProductsProps) => {
+const ProductManagement = () => {
   const { user, loading: authLoading } = useAuth();
-  const navigate = useNavigate();
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -35,13 +27,6 @@ const AdminProducts = ({ embedded = false }: AdminProductsProps) => {
   const [price, setPrice] = useState("");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
-
-  // check of user superuser is (alleen redirect als niet embedded)
-  useEffect(() => {
-    if (!embedded && !authLoading && (!user || !user.is_superuser)) {
-      navigate("/");
-    }
-  }, [user, authLoading, navigate, embedded]);
 
   // laad producten
   useEffect(() => {
@@ -158,20 +143,10 @@ const AdminProducts = ({ embedded = false }: AdminProductsProps) => {
   };
 
   if (authLoading || loading) {
-    if (embedded) {
-      return (
-        <div className="flex justify-center items-center h-64">
-          <p>Laden...</p>
-        </div>
-      );
-    }
     return (
-      <>
-        <Header />
-        <div className="flex justify-center items-center h-screen">
-          <p>Laden...</p>
-        </div>
-      </>
+      <div className="flex justify-center items-center h-64">
+        <p>Laden...</p>
+      </div>
     );
   }
 
@@ -179,8 +154,8 @@ const AdminProducts = ({ embedded = false }: AdminProductsProps) => {
     return null;
   }
 
-  const content = (
-    <section className={embedded ? "p-5" : "px-8 py-10 min-h-screen"}>
+  return (
+    <section className="p-5">
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-3xl font-bold">Product Beheer</h2>
         <button
@@ -461,18 +436,6 @@ const AdminProducts = ({ embedded = false }: AdminProductsProps) => {
       </div>
     </section>
   );
-
-  if (embedded) {
-    return content;
-  }
-
-  return (
-    <>
-      <Header />
-      {content}
-      <Footer />
-    </>
-  );
 };
 
-export default AdminProducts;
+export default ProductManagement;
