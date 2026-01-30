@@ -6,6 +6,7 @@ from pathlib import Path
 from app.routers.auth import router as auth_router
 from app.routers.products import router as products_router
 from app.routers.uploads import router as uploads_router
+from app.routers.wishlist import router as wishlist_router
 
 app = FastAPI(
     title="Coralynn Webshop API",
@@ -31,6 +32,7 @@ app.mount("/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
 app.include_router(auth_router)
 app.include_router(products_router)
 app.include_router(uploads_router)
+app.include_router(wishlist_router)
 
 
 @app.get("/api/ping")
