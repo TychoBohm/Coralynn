@@ -6,7 +6,7 @@ const ProfileSettings = () => {
   const { user, refreshUser } = useAuth();
   const [editing, setEditing] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState(user?.phone_number || "");
-  const [address, setAddress] = useState(user?.address || "");
+  const [name, setName] = useState(user?.name || "");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -19,7 +19,7 @@ const ProfileSettings = () => {
         method: "PUT",
         body: JSON.stringify({
           phone_number: phoneNumber || null,
-          address: address || null,
+          name: name || null,
         }),
       });
       await refreshUser();
@@ -73,18 +73,18 @@ const ProfileSettings = () => {
 
         <div>
           <label className="block text-sm font-medium text-gray-600 mb-1">
-            Adres
+            Naam
           </label>
           {editing ? (
             <input
               type="text"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              placeholder="Voer adres in"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Voer naam in"
               className="w-full border border-gray-300 rounded px-3 py-2"
             />
           ) : (
-            <p className="text-lg">{user.address || "Niet ingesteld"}</p>
+            <p className="text-lg">{user.name || "Niet ingesteld"}</p>
           )}
         </div>
 
@@ -111,7 +111,7 @@ const ProfileSettings = () => {
                 onClick={() => {
                   setEditing(false);
                   setPhoneNumber(user.phone_number || "");
-                  setAddress(user.address || "");
+                  setName(user.name || "");
                 }}
                 className="border border-gray-300 px-6 py-2 rounded cursor-pointer"
               >

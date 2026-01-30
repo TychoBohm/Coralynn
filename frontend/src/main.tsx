@@ -8,6 +8,7 @@ import Product from "./pages/product";
 import Profile from "./pages/profile";
 import Wishlist from "./pages/wishList";
 import Checkout from "./pages/checkout";
+import OrderSuccess from "./pages/orderSuccess";
 import Auth from "./pages/auth";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
@@ -31,6 +32,7 @@ createRoot(document.getElementById("root")!).render(
             />
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/order-success" element={<OrderSuccess />} />
             <Route path="/auth" element={<Auth />} />
           </Routes>
         </CartProvider>

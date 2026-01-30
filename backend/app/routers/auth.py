@@ -90,7 +90,7 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
         email=user_data.email,
         hashed_password=hashed_password,
         phone_number=user_data.phone_number,
-        address=user_data.address
+        name=user_data.name
     )
     
     db.add(new_user)
@@ -160,8 +160,14 @@ def update_me(
     # update profiel van ingelogde user
     if user_data.phone_number is not None:
         current_user.phone_number = user_data.phone_number  # type: ignore
-    if user_data.address is not None:
-        current_user.address = user_data.address  # type: ignore
+    if user_data.name is not None:
+        current_user.name = user_data.name  # type: ignore
+    if user_data.shipping_city is not None:
+        current_user.shipping_city = user_data.shipping_city  # type: ignore
+    if user_data.shipping_street is not None:
+        current_user.shipping_street = user_data.shipping_street  # type: ignore
+    if user_data.shipping_postal_code is not None:
+        current_user.shipping_postal_code = user_data.shipping_postal_code  # type: ignore
     
     db.commit()
     db.refresh(current_user)

@@ -1,8 +1,197 @@
-import { Link } from "react-router";
-import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
+import { updateUser } from "../api/api";
 
 const Checkout = () => {
-  const [shipping, setShipping] = useState("bezorgen");
+  const navigate = useNavigate();
+  const { items, subtotal, clearCart } = useCart();
+  const { user, isAuthenticated, refreshUser } = useAuth();
+
+  const [shipping, setShipping] = useState<"bezorgen" | "ophalen">("bezorgen");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [city, setCity] = useState("");
+  const [street, setStreet] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [acceptTerms, setAcceptTerms] = useState(false);
+  const [rememberDetails, setRememberDetails] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Vul gegevens in bij laden vanuit account (als ingelogd)
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      setEmail(user.email || "");
+      setPhone(user.phone_number || "");
+      if (user.name) {
+        setName(user.name);
+      }
+      // Vul opgeslagen verzendgegevens in
+      if (user.shipping_city) {
+        setCity(user.shipping_city);
+        setRememberDetails(true);
+      }
+      if (user.shipping_street) {
+        setStreet(user.shipping_street);
+      }
+      if (user.shipping_postal_code) {
+        setPostalCode(user.shipping_postal_code);
+      }
+    }
+  }, [isAuthenticated, user]);
+
+  // Handler voor "onthoud mijn gegevens" checkbox
+  const handleRememberDetailsChange = (checked: boolean) => {
+    if (checked && !isAuthenticated) {
+      // Niet ingelogd? Redirect naar login pagina
+      navigate("/auth", { state: { returnTo: "/checkout" } });
+      return;
+    }
+    setRememberDetails(checked);
+  };
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!name.trim()) {
+      newErrors.name = "Naam is verplicht";
+    }
+
+    if (!email.trim()) {
+      newErrors.email = "Email is verplicht";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = "Ongeldig email adres";
+    }
+
+    if (shipping === "bezorgen") {
+      if (!city.trim()) {
+        newErrors.city = "Stad is verplicht";
+      }
+      if (!street.trim()) {
+        newErrors.street = "Straatnaam is verplicht";
+      }
+      if (!postalCode.trim()) {
+        newErrors.postalCode = "Postcode is verplicht";
+      }
+    }
+
+    if (!acceptTerms) {
+      newErrors.terms = "Je moet akkoord gaan met de voorwaarden";
+    }
+
+    if (items.length === 0) {
+      newErrors.cart = "Je winkelwagen is leeg";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const generateOrderNumber = () => {
+    const timestamp = Date.now().toString(36).toUpperCase();
+    const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+    return `COR-${timestamp}-${random}`;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    // Sla gegevens op in database als checkbox is aangevinkt en gebruiker is ingelogd
+    if (rememberDetails && isAuthenticated) {
+      try {
+        await updateUser({
+          shipping_city: city || null,
+          shipping_street: street || null,
+          shipping_postal_code: postalCode || null,
+        });
+        await refreshUser();
+      } catch (err) {
+        console.error("Kon gegevens niet opslaan:", err);
+      }
+    }
+
+    // Simuleer een korte vertraging (alsof er een betaling wordt verwerkt)
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    const orderDetails = {
+      name,
+      email,
+      phone,
+      shipping,
+      address:
+        shipping === "bezorgen"
+          ? {
+              city,
+              street,
+              postalCode,
+            }
+          : undefined,
+      items: items.map((item) => ({
+        title: item.title,
+        quantity: item.quantity,
+        price: item.price,
+        size: item.size,
+      })),
+      total: shipping === "ophalen" ? subtotal : subtotal + 4.95,
+      orderNumber: generateOrderNumber(),
+    };
+
+    // Leeg de winkelwagen
+    clearCart();
+
+    // Navigeer naar success pagina met order details
+    navigate("/order-success", { state: orderDetails });
+  };
+
+  // Als de winkelwagen leeg is
+  if (items.length === 0) {
+    return (
+      <>
+        <nav className="fixed py-4 md:py-6 px-4 md:px-28 flex items-center justify-between w-full z-10 bg-white shadow">
+          <h1 className="text-xl md:text-3xl font-bold">CORALYNN</h1>
+          <Link to="/">
+            <p className="font-light text-sm md:text-base">Ga terug</p>
+          </Link>
+        </nav>
+        <section className="min-h-screen flex flex-col items-center justify-center p-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="w-16 h-16 text-gray-300 mb-4"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+            />
+          </svg>
+          <h2 className="text-xl font-bold mb-2">Je winkelwagen is leeg</h2>
+          <p className="text-gray-500 mb-6">
+            Voeg producten toe om af te rekenen
+          </p>
+          <Link
+            to="/"
+            className="bg-[#D4B896] hover:bg-[#C4A57A] text-black font-medium px-6 py-3 rounded-lg transition-colors"
+          >
+            Bekijk producten
+          </Link>
+        </section>
+      </>
+    );
+  }
+
   return (
     <>
       <nav className="fixed py-4 md:py-6 px-4 md:px-28 flex items-center justify-between w-full z-10 bg-white shadow">
@@ -14,7 +203,10 @@ const Checkout = () => {
       <section className="min-h-screen flex flex-col lg:flex-row">
         <div className="w-full lg:w-1/2 flex flex-col px-4 md:px-10 lg:px-20 py-8 pt-20 md:pt-24 lg:pt-8 lg:justify-center">
           <h2 className="font-bold text-xl md:text-2xl mb-6">Checkout</h2>
-          <form className="space-y-2 flex flex-col justify-start">
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-2 flex flex-col justify-start"
+          >
             <div>
               <label className="font-medium text-sm md:text-base">
                 {shipping === "bezorgen" ? (
@@ -66,6 +258,7 @@ const Checkout = () => {
                 </label>
               </div>
             </div>
+
             <div>
               <label className="block text-sm font-medium mb-1">
                 Volledige naam<span className="text-red-500">*</span>
@@ -73,10 +266,17 @@ const Checkout = () => {
               <input
                 type="text"
                 placeholder="Voer je naam in"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-                required
+                className={`w-full border rounded-lg px-3 py-2 ${
+                  errors.name ? "border-red-500" : "border-gray-300"
+                }`}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
+              {errors.name && (
+                <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+              )}
             </div>
+
             <div>
               <label className="block text-sm font-medium mb-1">
                 Email adres<span className="text-red-500">*</span>
@@ -84,10 +284,17 @@ const Checkout = () => {
               <input
                 type="email"
                 placeholder="Voer email adres in"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-                required
+                className={`w-full border rounded-lg px-3 py-2 ${
+                  errors.email ? "border-red-500" : "border-gray-300"
+                }`}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
+              {errors.email && (
+                <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+              )}
             </div>
+
             <div>
               <label className="block text-sm font-medium mb-1">
                 Telefoon nummer
@@ -96,8 +303,11 @@ const Checkout = () => {
                 type="tel"
                 placeholder="Voer telefoonnummer in"
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
               />
             </div>
+
             {shipping === "bezorgen" ? (
               <div className="flex flex-col sm:flex-row gap-2 mt-1">
                 <div className="flex-1">
@@ -107,9 +317,15 @@ const Checkout = () => {
                   <input
                     type="text"
                     placeholder="Vul je stad in"
-                    className="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2"
-                    required
+                    className={`mt-1 w-full border rounded-lg px-3 py-2 ${
+                      errors.city ? "border-red-500" : "border-gray-300"
+                    }`}
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
                   />
+                  {errors.city && (
+                    <p className="text-red-500 text-xs mt-1">{errors.city}</p>
+                  )}
                 </div>
                 <div className="flex-1">
                   <label className="block text-sm font-medium">
@@ -118,9 +334,15 @@ const Checkout = () => {
                   <input
                     type="text"
                     placeholder="Vul je straatnaam in"
-                    className="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2"
-                    required
+                    className={`mt-1 w-full border rounded-lg px-3 py-2 ${
+                      errors.street ? "border-red-500" : "border-gray-300"
+                    }`}
+                    value={street}
+                    onChange={(e) => setStreet(e.target.value)}
                   />
+                  {errors.street && (
+                    <p className="text-red-500 text-xs mt-1">{errors.street}</p>
+                  )}
                 </div>
                 <div className="flex-1">
                   <label className="block text-sm font-medium">
@@ -129,29 +351,64 @@ const Checkout = () => {
                   <input
                     type="text"
                     placeholder="Vul je postcode in"
-                    className="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2"
-                    required
+                    className={`mt-1 w-full border rounded-lg px-3 py-2 ${
+                      errors.postalCode ? "border-red-500" : "border-gray-300"
+                    }`}
+                    value={postalCode}
+                    onChange={(e) => setPostalCode(e.target.value)}
                   />
+                  {errors.postalCode && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.postalCode}
+                    </p>
+                  )}
                 </div>
               </div>
             ) : (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-2 text-sm">
                 <p className="font-semibold mb-1">Afhalen bij CORALYNN Store</p>
-                <p>Schelpstraat 124, Bikinibroek, Stille Oceaan</p>
+                <p>Schelpstraat 124, Bikinibroek, Stille Oceaan</p>
                 <p className="mt-2">
                   Je bestelling wordt gereserveerd en ligt 3 dagen voor je
                   klaar.
                 </p>
               </div>
             )}
+
             <div className="flex flex-col gap-2 mt-2">
-              <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" className="accent-blue-500" />
+              <label
+                className={`flex items-center gap-2 text-sm ${
+                  errors.terms ? "text-red-500" : ""
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  className="accent-blue-500"
+                  checked={acceptTerms}
+                  onChange={(e) => setAcceptTerms(e.target.checked)}
+                />
                 Ik heb de algemene voorwaarden gelezen en ga hiermee akkoord
+                <span className="text-red-500">*</span>
               </label>
-              <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" className="accent-blue-500" />
-                Onthoud gegevens
+              {errors.terms && (
+                <p className="text-red-500 text-xs">{errors.terms}</p>
+              )}
+
+              <label className="flex items-center gap-2 text-sm text-gray-600">
+                <input
+                  type="checkbox"
+                  className="accent-blue-500"
+                  checked={rememberDetails}
+                  onChange={(e) =>
+                    handleRememberDetailsChange(e.target.checked)
+                  }
+                />
+                Onthoud mijn gegevens voor de volgende keer
+                {!isAuthenticated && (
+                  <span className="text-xs text-gray-400">
+                    (vereist inloggen)
+                  </span>
+                )}
               </label>
             </div>
           </form>
@@ -161,93 +418,103 @@ const Checkout = () => {
           <div className="bg-transparent rounded-lg flex flex-col h-full justify-center lg:pt-15">
             <h3 className="font-medium mb-6">Winkelmand controleren</h3>
             <div className="space-y-4 mb-6 overflow-y-auto max-h-60 lg:h-50">
-              <div className="flex gap-4 items-center">
-                <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center">
-                  <img
-                    src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=200&q=80"
-                    alt="Product"
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium">Lorem</div>
-                  <div className="text-xs text-gray-500">
-                    Lorem product omschrijving text bla bla...
+              {items.map((item, index) => (
+                <div key={index} className="flex gap-4 items-center">
+                  <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center">
+                    {item.imageUrl ? (
+                      <img
+                        src={item.imageUrl}
+                        alt={item.title}
+                        className="object-cover w-full h-full"
+                      />
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth="1.5"
+                        stroke="currentColor"
+                        className="w-8 h-8 text-gray-400"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+                        />
+                      </svg>
+                    )}
                   </div>
-                  <div className="text-xs mt-1">1x</div>
-                </div>
-                <div className="font-medium pr-4">€--</div>
-              </div>
-
-              <div className="flex gap-4 items-center">
-                <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center">
-                  <img
-                    src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=200&q=80"
-                    alt="Product"
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium">Lorem</div>
-                  <div className="text-xs text-gray-500">
-                    Lorem product omschrijving text bla bla...
+                  <div className="flex-1">
+                    <div className="font-medium">{item.title}</div>
+                    <div className="text-xs text-gray-500">
+                      Maat: {item.size}
+                    </div>
+                    <div className="text-xs mt-1">{item.quantity}x</div>
                   </div>
-                  <div className="text-xs mt-1">1x</div>
-                </div>
-                <div className="font-medium pr-4">€--</div>
-              </div>
-              <div className="flex gap-4 items-center">
-                <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center">
-                  <img
-                    src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=200&q=80"
-                    alt="Product"
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium">Lorem</div>
-                  <div className="text-xs text-gray-500">
-                    Lorem product omschrijving text bla bla...
+                  <div className="font-medium pr-4">
+                    €{(item.price * item.quantity).toFixed(2)}
                   </div>
-                  <div className="text-xs mt-1">1x</div>
                 </div>
-                <div className="font-medium pr-4">€--</div>
-              </div>
-            </div>
-
-            <div className="flex gap-2 mb-4 ">
-              <div className="relative flex-1">
-                <input
-                  type="text"
-                  placeholder="Kortingscode toevoegen"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm pr-24 bg-white"
-                />
-                <button
-                  type="button"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-[#3A7BBF] text-sm font-medium px-2 py-1 cursor-pointer hover:underline"
-                  style={{ minWidth: "auto" }}
-                >
-                  Toevoegen
-                </button>
-              </div>
+              ))}
             </div>
 
             <div className="space-y-1 text-sm mb-4">
               <div className="flex justify-between">
-                <span>Korting</span>
-                <span>€--</span>
+                <span>Subtotaal</span>
+                <span>€{subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
-                <span>Korting</span>
-                <span>€--</span>
+                <span>Verzendkosten</span>
+                <span>{shipping === "ophalen" ? "Gratis" : "€4.95"}</span>
               </div>
-              <div className="flex justify-between font-bold">
+              <div className="flex justify-between font-bold text-lg pt-2 border-t mt-2">
                 <span>Totaal</span>
-                <span>€--</span>
+                <span>
+                  €
+                  {(shipping === "ophalen"
+                    ? subtotal
+                    : subtotal + 4.95
+                  ).toFixed(2)}
+                </span>
               </div>
             </div>
-            <button className="w-full bg-[#D4B896] hover:bg-[#c9ad87] cursor-pointer transition-colors duration-100 text-lg font-medium rounded-lg py-2 mt-2">
-              Betaal
+
+            {errors.cart && (
+              <p className="text-red-500 text-sm mb-4">{errors.cart}</p>
+            )}
+
+            <button
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+              className="w-full bg-[#D4B896] hover:bg-[#C4A57A] cursor-pointer transition-colors duration-100 text-lg font-medium rounded-lg py-3 mt-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {isSubmitting ? (
+                <>
+                  <svg
+                    className="animate-spin h-5 w-5"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Verwerken...
+                </>
+              ) : (
+                "Afrekenen"
+              )}
             </button>
           </div>
         </div>

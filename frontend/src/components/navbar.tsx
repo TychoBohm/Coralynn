@@ -361,7 +361,7 @@ const Navbar = () => {
             {isAuthenticated && user ? (
               <div className="space-y-1">
                 <p className="font-semibold text-gray-800">
-                  Welkom: {user.email.split("@")[0]}
+                  Welkom: {user.name || user.email.split("@")[0]}
                 </p>
                 <p className="text-gray-600">{user.email}</p>
                 <p className="text-gray-500 text-sm">
