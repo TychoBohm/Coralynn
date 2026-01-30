@@ -69,7 +69,7 @@ const Product = () => {
       </div>
       <section className="min-h-screen pt-24 md:pt-30 flex flex-col lg:flex-row gap-4 md:gap-8 justify-center px-4 md:px-10 lg:px-20 pb-10">
         {/* kleine thumbnails - horizontaal op mobile, verticaal op desktop */}
-        <div className="flex lg:flex-col gap-2 md:gap-4 max-w-full lg:max-h-[520px] overflow-x-auto lg:overflow-x-visible lg:overflow-y-auto order-2 lg:order-1">
+        <div className="flex lg:flex-col gap-2 md:gap-4 max-w-full lg:max-h-130 overflow-x-auto lg:overflow-x-visible lg:overflow-y-auto order-2 lg:order-1">
           {sortedImages.map((img, index) => (
             <img
               key={img.id}
@@ -89,7 +89,7 @@ const Product = () => {
             <img
               src={mainImage}
               alt={product.title}
-              className="w-full max-w-[300px] sm:max-w-[400px] md:max-w-[500px] lg:w-[520px] aspect-square object-cover rounded"
+              className="w-full sm:max-w-100 md:max-w-125 lg:w-130 aspect-square lg:object-cover md:object-contain rounded"
             />
           )}
         </div>
@@ -118,7 +118,7 @@ const Product = () => {
               <option value="xl">XL</option>
             </select>
             <button
-              className="bg-[#DECDB7] text-white px-6 py-3 rounded-md hover:bg-[#CBB89A] hover:cursor-pointer transition-colors w-full sm:w-auto"
+              className="bg-[#D4B896] text-white px-6 py-3 rounded-md hover:bg-[#CBB89A] hover:cursor-pointer transition-colors duration-150 w-full sm:w-auto"
               onClick={() => {
                 const imageUrl = sortedImages[0]?.image_url || "";
                 addToCart({

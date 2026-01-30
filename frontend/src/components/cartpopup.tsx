@@ -153,7 +153,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ open, onClose }) => {
           <div className="px-4 sm:px-6 py-4">
             <Link to="/checkout">
               <button
-                className="w-full bg-[#DECDB7] text-black font-bold text-lg hover:cursor-pointer rounded py-2 transition hover:bg-[#CBB89A] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-[#D4B896] text-black font-bold text-lg hover:cursor-pointer rounded py-2 transition hover:bg-[#c9ad87] disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={items.length === 0}
               >
                 Afrekenen

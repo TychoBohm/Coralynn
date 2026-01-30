@@ -103,7 +103,7 @@ const ProfileSettings = () => {
               <button
                 onClick={handleSave}
                 disabled={loading}
-                className="bg-[#DECDB7] hover:bg-[#CBB89A] px-6 py-2 rounded font-semibold disabled:opacity-50"
+                className="bg-[#D4B896] hover:bg-[#c9ad87] px-6 py-2 rounded font-semibold disabled:opacity-50 cursor-pointer"
               >
                 {loading ? "Opslaan..." : "Opslaan"}
               </button>
@@ -113,7 +113,7 @@ const ProfileSettings = () => {
                   setPhoneNumber(user.phone_number || "");
                   setAddress(user.address || "");
                 }}
-                className="border border-gray-300 px-6 py-2 rounded"
+                className="border border-gray-300 px-6 py-2 rounded cursor-pointer"
               >
                 Annuleren
               </button>
@@ -121,7 +121,7 @@ const ProfileSettings = () => {
           ) : (
             <button
               onClick={() => setEditing(true)}
-              className="bg-[#DECDB7] hover:bg-[#CBB89A] px-6 py-2 rounded font-semibold"
+              className="bg-[#D4B896] hover:bg-[#c9ad87] px-6 py-2 rounded font-semibold cursor-pointer"
             >
               Bewerken
             </button>

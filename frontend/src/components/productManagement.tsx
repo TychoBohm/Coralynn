@@ -328,7 +328,7 @@ const ProductManagement = () => {
                 <div className="flex flex-wrap gap-2 md:gap-3 mt-4">
                   <button
                     onClick={() => handleEdit(product)}
-                    className="bg-[#DECDB7] text-gray-800 py-2 px-4 md:px-6 rounded-lg hover:bg-[#CBB89A] transition-colors cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                    className="bg-[#D4B896] text-gray-800 py-2 px-4 md:px-6 rounded-lg hover:bg-[#c9ad87] transition-colors cursor-pointer flex items-center gap-2 text-sm md:text-base"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -406,7 +406,7 @@ const ProductManagement = () => {
                       type="text"
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
-                      className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#DECDB7]"
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#D4B896]"
                       required
                     />
                   </div>
@@ -418,7 +418,7 @@ const ProductManagement = () => {
                     <textarea
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
-                      className="w-full border border-gray-200 rounded-lg px-3 py-2 h-24 focus:outline-none focus:ring-2 focus:ring-[#DECDB7] resize-none"
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 h-24 focus:outline-none focus:ring-2 focus:ring-[#D4B896] resize-none"
                     />
                   </div>
 
@@ -431,7 +431,7 @@ const ProductManagement = () => {
                       step="0.01"
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
-                      className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#DECDB7]"
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#D4B896]"
                       required
                     />
                   </div>
@@ -445,7 +445,7 @@ const ProductManagement = () => {
                       accept="image/*"
                       multiple
                       onChange={handleImageUpload}
-                      className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#DECDB7] file:text-gray-700 hover:file:bg-[#CBB89A] file:cursor-pointer"
+                      className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#D4B896] file:text-gray-700 hover:file:bg-[#c9ad87] file:cursor-pointer"
                       disabled={uploading}
                     />
                     {uploading && (
@@ -492,7 +492,7 @@ const ProductManagement = () => {
 
                   <button
                     type="submit"
-                    className="w-full bg-[#C4A484] text-white py-2 rounded-lg hover:bg-[#B8956E] transition-colors cursor-pointer font-medium"
+                    className="w-full bg-[#D4B896] text-white py-2 rounded-lg hover:bg-[#c9ad87] transition-colors cursor-pointer font-medium"
                   >
                     Opslaan
                   </button>
