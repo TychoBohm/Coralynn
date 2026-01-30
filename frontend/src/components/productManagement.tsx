@@ -193,22 +193,22 @@ const ProductManagement = () => {
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full border rounded-lg px-4 py-2"
+                className="w-full border rounded-lg px-4 py-2 border-gray-300"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">
+              <label className="block text-sm font-medium mb-1 border-gray-300">
                 Beschrijving
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full border rounded-lg px-4 py-2 h-32"
+                className="w-full border rounded-lg px-4 py-2 h-32 border-gray-300"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">
+              <label className="block text-sm font-medium mb-1 border-gray-300">
                 Prijs (€)
               </label>
               <input
@@ -216,13 +216,13 @@ const ProductManagement = () => {
                 step="0.01"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                className="w-full border rounded-lg px-4 py-2"
+                className="w-full border rounded-lg px-4 py-2 border-gray-300"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1">
+              <label className="block text-sm font-medium mb-1 border-gray-300">
                 Afbeeldingen
               </label>
               <input
@@ -230,7 +230,7 @@ const ProductManagement = () => {
                 accept="image/*"
                 multiple
                 onChange={handleImageUpload}
-                className="w-full border rounded-lg px-4 py-2"
+                className="w-full border rounded-lg px-4 py-2 border-gray-300"
                 disabled={uploading}
               />
               {uploading && (
@@ -271,169 +271,245 @@ const ProductManagement = () => {
       )}
 
       {/* Product List */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="text-left px-6 py-3">Afbeelding</th>
-              <th className="text-left px-6 py-3">Titel</th>
-              <th className="text-left px-6 py-3">Prijs</th>
-              <th className="text-left px-6 py-3">Acties</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product) => (
-              <React.Fragment key={product.id}>
-                <tr className="border-t">
-                  <td className="px-6 py-4">
-                    {product.images[0] ? (
-                      <img
-                        src={product.images[0].image_url}
-                        alt={product.title}
-                        className="w-16 h-16 object-cover rounded"
+      <div className="flex flex-col gap-4">
+        {products.map((product) => (
+          <div
+            key={product.id}
+            className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+          >
+            <div className="flex">
+              {/* Product Image */}
+              <div className="relative w-48 h-48 bg-gray-100 shrink-0">
+                {product.images[0] ? (
+                  <img
+                    src={product.images[0].image_url}
+                    alt={product.title}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-gray-400">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="w-12 h-12"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
                       />
-                    ) : (
-                      <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center text-gray-400">
-                        Geen
+                    </svg>
+                  </div>
+                )}
+              </div>
+
+              {/* Product Info */}
+              <div className="flex-1 p-5 flex flex-col justify-between">
+                <div>
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="font-semibold text-xl text-gray-800">
+                      {product.title}
+                    </h3>
+                    <span className="bg-[#DECDB7] px-4 py-1 rounded-full font-bold text-gray-800">
+                      €{Number(product.price).toFixed(2)}
+                    </span>
+                  </div>
+                  <p className="text-gray-500 line-clamp-2">
+                    {product.description || "Geen beschrijving"}
+                  </p>
+                </div>
+
+                {/* Actions */}
+                <div className="flex gap-3 mt-4">
+                  <button
+                    onClick={() => handleEdit(product)}
+                    className="bg-[#DECDB7] text-gray-800 py-2 px-6 rounded-lg hover:bg-[#CBB89A] transition-colors cursor-pointer flex items-center gap-2"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="w-4 h-4"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                      />
+                    </svg>
+                    Bewerken
+                  </button>
+                  <button
+                    onClick={() => handleDelete(product.id)}
+                    className="bg-red-50 text-red-600 py-2 px-4 rounded-lg hover:bg-red-100 transition-colors cursor-pointer flex items-center gap-2"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="w-4 h-4"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                      />
+                    </svg>
+                    Verwijderen
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Edit Form (slides down when editing) */}
+            {editingProductId === product.id && (
+              <div className="border-t bg-gray-50 p-5">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <h4 className="font-semibold text-gray-700">Bewerken</h4>
+                    <button
+                      type="button"
+                      onClick={resetForm}
+                      className="text-gray-400 hover:text-gray-600 cursor-pointer"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth="2"
+                        stroke="currentColor"
+                        className="w-5 h-5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M6 18 18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600 mb-1">
+                      Titel
+                    </label>
+                    <input
+                      type="text"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#DECDB7]"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600 mb-1">
+                      Beschrijving
+                    </label>
+                    <textarea
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 h-24 focus:outline-none focus:ring-2 focus:ring-[#DECDB7] resize-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600 mb-1">
+                      Prijs (€)
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={price}
+                      onChange={(e) => setPrice(e.target.value)}
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#DECDB7]"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600 mb-1">
+                      Afbeeldingen
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleImageUpload}
+                      className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#DECDB7] file:text-gray-700 hover:file:bg-[#CBB89A] file:cursor-pointer"
+                      disabled={uploading}
+                    />
+                    {uploading && (
+                      <p className="text-sm text-gray-500 mt-1">Uploaden...</p>
+                    )}
+                    {imageUrls.length > 0 && (
+                      <div className="flex gap-2 mt-3 flex-wrap">
+                        {imageUrls.map((url, i) => (
+                          <div key={i} className="relative group">
+                            <img
+                              src={url}
+                              alt={`Preview ${i + 1}`}
+                              className="w-16 h-16 object-cover rounded-lg"
+                            />
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setImageUrls(
+                                  imageUrls.filter((_, idx) => idx !== i),
+                                )
+                              }
+                              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
                       </div>
                     )}
-                  </td>
-                  <td className="px-6 py-4 font-medium">{product.title}</td>
-                  <td className="px-6 py-4">€{product.price}</td>
-                  <td className="px-6 py-4">
-                    <button
-                      onClick={() => handleEdit(product)}
-                      className="text-blue-600 hover:underline mr-4 cursor-pointer"
-                    >
-                      Bewerken
-                    </button>
-                    <button
-                      onClick={() => handleDelete(product.id)}
-                      className="text-red-600 hover:underline cursor-pointer"
-                    >
-                      Verwijderen
-                    </button>
-                  </td>
-                </tr>
-                {/* Inline edit form onder dit product */}
-                {editingProductId === product.id && (
-                  <tr>
-                    <td colSpan={4} className="px-6 py-4 bg-gray-50">
-                      <div className="bg-white p-6 rounded-lg shadow-md">
-                        <div className="flex justify-between items-center mb-4">
-                          <h2 className="text-xl font-semibold">
-                            Product Bewerken
-                          </h2>
-                          <button
-                            onClick={resetForm}
-                            className="text-gray-500 hover:text-gray-700 cursor-pointer"
-                          >
-                            ✕ Sluiten
-                          </button>
-                        </div>
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                          <div>
-                            <label className="block text-sm font-medium mb-1">
-                              Titel
-                            </label>
-                            <input
-                              type="text"
-                              value={title}
-                              onChange={(e) => setTitle(e.target.value)}
-                              className="w-full border rounded-lg px-4 py-2"
-                              required
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium mb-1">
-                              Beschrijving
-                            </label>
-                            <textarea
-                              value={description}
-                              onChange={(e) => setDescription(e.target.value)}
-                              className="w-full border rounded-lg px-4 py-2 h-32"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium mb-1">
-                              Prijs (€)
-                            </label>
-                            <input
-                              type="number"
-                              step="0.01"
-                              value={price}
-                              onChange={(e) => setPrice(e.target.value)}
-                              className="w-full border rounded-lg px-4 py-2"
-                              required
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium mb-1">
-                              Afbeeldingen
-                            </label>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              multiple
-                              onChange={handleImageUpload}
-                              className="w-full border rounded-lg px-4 py-2"
-                              disabled={uploading}
-                            />
-                            {uploading && (
-                              <p className="text-sm text-gray-500 mt-1">
-                                Uploaden...
-                              </p>
-                            )}
-                            {imageUrls.length > 0 && (
-                              <div className="flex gap-2 mt-2 flex-wrap">
-                                {imageUrls.map((url, i) => (
-                                  <div key={i} className="relative">
-                                    <img
-                                      src={url}
-                                      alt={`Preview ${i + 1}`}
-                                      className="w-20 h-20 object-cover rounded"
-                                    />
-                                    <button
-                                      type="button"
-                                      onClick={() =>
-                                        setImageUrls(
-                                          imageUrls.filter(
-                                            (_, idx) => idx !== i,
-                                          ),
-                                        )
-                                      }
-                                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 text-xs cursor-pointer"
-                                    >
-                                      ×
-                                    </button>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                          <button
-                            type="submit"
-                            className="bg-[#C4A484] text-white px-6 py-2 rounded-lg hover:bg-[#B8956E] transition-colors cursor-pointer"
-                          >
-                            Opslaan
-                          </button>
-                        </form>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </React.Fragment>
-            ))}
-            {products.length === 0 && (
-              <tr>
-                <td colSpan={4} className="px-6 py-8 text-center text-gray-500">
-                  Geen producten gevonden
-                </td>
-              </tr>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full bg-[#C4A484] text-white py-2 rounded-lg hover:bg-[#B8956E] transition-colors cursor-pointer font-medium"
+                  >
+                    Opslaan
+                  </button>
+                </form>
+              </div>
             )}
-          </tbody>
-        </table>
+          </div>
+        ))}
       </div>
+
+      {products.length === 0 && (
+        <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1"
+            stroke="currentColor"
+            className="w-16 h-16 mx-auto text-gray-300 mb-4"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"
+            />
+          </svg>
+          <p className="text-gray-500 text-lg">Nog geen producten</p>
+          <p className="text-gray-400 text-sm mt-1">
+            Klik op "Nieuw Product" om te beginnen
+          </p>
+        </div>
+      )}
     </section>
   );
 };

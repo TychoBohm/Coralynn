@@ -108,7 +108,7 @@ const Home = () => {
                 <Card
                   title={product.title}
                   description={product.description || ""}
-                  price={product.price}
+                  price={Number(product.price).toFixed(2).replace(".", ",")}
                   imageUrl={getFirstImageUrl(product)}
                   isInWishlist={wishlistIds.has(product.id)}
                   onWishlistToggle={() => handleWishlistToggle(product.id)}

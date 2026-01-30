@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 
 interface CartPopupProps {
   open: boolean;
@@ -8,6 +9,9 @@ interface CartPopupProps {
 }
 
 const CartPopup: React.FC<CartPopupProps> = ({ open, onClose }) => {
+  const { items, updateQuantity, removeFromCart, totalItems, subtotal } =
+    useCart();
+
   useEffect(() => {
     if (!open) return;
     const handleClick = (e: MouseEvent) => {
@@ -20,7 +24,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ open, onClose }) => {
 
   return (
     <div
-      className={`fixed inset-0 z-40 transition-all ${open ? "visible" : "invisible"}`}
+      className={`fixed inset-0 z-50 transition-all ${open ? "visible" : "invisible"}`}
       style={{ background: open ? "rgba(0,0,0,0.30)" : "transparent" }}
     >
       <div
@@ -36,14 +40,14 @@ const CartPopup: React.FC<CartPopupProps> = ({ open, onClose }) => {
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
-            stroke-width="2"
+            strokeWidth="2"
             stroke="currentColor"
             className="size-6 text-black hover:cursor-pointer"
             onClick={onClose}
           >
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               d="M6 18 18 6M6 6l12 12"
             />
           </svg>
@@ -57,47 +61,76 @@ const CartPopup: React.FC<CartPopupProps> = ({ open, onClose }) => {
             touchAction: "pan-y",
           }}
         >
-          {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="flex mb-6 last:mb-0 text-black items-center"
-            >
-              <img
-                src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=200&q=80"
-                alt="Product"
-                className="w-24 h-24 object-cover mr-4"
-              />
-              <div className="flex-1 flex flex-col justify-between text-black">
-                <div>
-                  <div className="flex justify-between items-center text-black">
-                    <span className="font-semibold text-black">Lorem</span>
-                    <span className="font-semibold text-black">€ 19,99</span>
-                  </div>
-                  <div className="text-black text-sm truncate mb-2">
-                    Lorem product omschrijving text bla bla...
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <label
-                      htmlFor={`aantal-${i}`}
-                      className="text-sm text-black"
-                    >
-                      Aantal:
-                    </label>
-                    <select
-                      id={`aantal-${i}`}
-                      className="border rounded px-2 py-1 text-black bg-white"
-                    >
-                      {[1, 2, 3, 4, 5].map((opt) => (
-                        <option key={opt} value={opt}>
-                          {opt}
-                        </option>
-                      ))}
-                    </select>
+          {items.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              Je winkelwagen is leeg
+            </div>
+          ) : (
+            items.map((item) => (
+              <div
+                key={`${item.productId}-${item.size}`}
+                className="flex mb-6 last:mb-0 text-black items-center"
+              >
+                <img
+                  src={item.imageUrl || "https://via.placeholder.com/200"}
+                  alt={item.title}
+                  className="w-24 h-24 object-cover mr-4"
+                />
+                <div className="flex-1 flex flex-col justify-between text-black">
+                  <div>
+                    <div className="flex justify-between items-center text-black">
+                      <span className="font-semibold text-black">
+                        {item.title}
+                      </span>
+                      <span className="font-semibold text-black">
+                        € {item.price.toFixed(2).replace(".", ",")}
+                      </span>
+                    </div>
+                    <div className="text-black text-sm truncate mb-1">
+                      {item.description}
+                    </div>
+                    <div className="text-black text-sm mb-2">
+                      Maat: {item.size}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <label
+                        htmlFor={`aantal-${item.productId}-${item.size}`}
+                        className="text-sm text-black"
+                      >
+                        Aantal:
+                      </label>
+                      <select
+                        id={`aantal-${item.productId}-${item.size}`}
+                        className="border rounded px-2 py-1 text-black bg-white"
+                        value={item.quantity}
+                        onChange={(e) =>
+                          updateQuantity(
+                            item.productId,
+                            item.size,
+                            parseInt(e.target.value),
+                          )
+                        }
+                      >
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((opt) => (
+                          <option key={opt} value={opt}>
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        onClick={() =>
+                          removeFromCart(item.productId, item.size)
+                        }
+                        className="ml-2 text-red-500 hover:text-red-700 text-sm"
+                      >
+                        Verwijder
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
         {/* Footer */}
         <div className="border-t bg-white text-black">
@@ -108,12 +141,19 @@ const CartPopup: React.FC<CartPopupProps> = ({ open, onClose }) => {
             <span className="text-black">Subtotaal</span>
           </div>
           <div className="flex justify-between items-center px-6 py-2 text-xs text-black">
-            <span className="text-black">*items</span>
-            <span className="text-black">€--</span>
+            <span className="text-black">
+              {totalItems} {totalItems === 1 ? "item" : "items"}
+            </span>
+            <span className="text-black">
+              €{subtotal.toFixed(2).replace(".", ",")}
+            </span>
           </div>
           <div className="px-6 py-4">
             <Link to="/checkout">
-              <button className="w-full bg-[#DECDB7] text-black font-bold text-lg hover:cursor-pointer rounded py-2 transition hover:bg-[#CBB89A]">
+              <button
+                className="w-full bg-[#DECDB7] text-black font-bold text-lg hover:cursor-pointer rounded py-2 transition hover:bg-[#CBB89A] disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={items.length === 0}
+              >
                 Afrekenen
               </button>
             </Link>
