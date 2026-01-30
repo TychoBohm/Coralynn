@@ -2,7 +2,7 @@ import Footer from "../components/footer";
 import Navbar from "../components/navbar";
 import OrderHistory from "../components/orderHistory";
 import ProfileSettings from "../components/profileSettings";
-import AdminProducts from "./adminProducts";
+import ProductManagement from "../components/productManagement";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -71,7 +71,7 @@ const ProfilePage = () => {
           ) : activeComponent === "profileSettings" ? (
             <ProfileSettings />
           ) : activeComponent === "productBeheer" && user?.is_superuser ? (
-            <AdminProducts embedded />
+            <ProductManagement />
           ) : (
             <div>Profiel informatie of standaard content</div>
           )}
