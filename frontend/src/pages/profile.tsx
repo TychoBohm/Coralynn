@@ -20,10 +20,10 @@ const ProfilePage = () => {
 
   return (
     <>
-      <div className="fixed">
+      <div className="fixed z-10">
         <Navbar />
       </div>
-      <section className="w-full min-h-screen flex gap-20 pt-35 pb-10">
+      <section className="w-full min-h-screen flex gap-20 pt-35 pb-10 relative">
         <div className="bg-[#F4F4F4] w-150 h-fit p-5 flex flex-col gap-3 sticky top-35">
           <h2 className="text-4xl font-extrabold mb-5">Profiel opties</h2>
           <p

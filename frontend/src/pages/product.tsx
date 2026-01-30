@@ -4,12 +4,16 @@ import Footer from "../components/footer";
 import Navbar from "../components/navbar";
 import { getProduct } from "../api/api";
 import type { Product as ProductType } from "../api/api";
+import { useCart } from "../context/CartContext";
 
 const Product = () => {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<ProductType | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [selectedSize, setSelectedSize] = useState("m");
+  const [addedToCart, setAddedToCart] = useState(false);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -99,18 +103,39 @@ const Product = () => {
             <p className="w-[50ch]">
               {product.description || "Geen beschrijving beschikbaar"}
             </p>
-            <p className="text-lg font-bold mt-4">€{product.price}</p>
+            <p className="text-lg font-bold mt-4">
+              €{Number(product.price).toFixed(2).replace(".", ",")}
+            </p>
           </div>
           <div className="flex flex-col">
             <h3 className="text-xl font-medium mt-4">Kies je maat</h3>
-            <select className="border border-gray-300 rounded-md p-2 mt-2 mb-4 w-32">
+            <select
+              className="border border-gray-300 rounded-md p-2 mt-2 mb-4 w-32"
+              value={selectedSize}
+              onChange={(e) => setSelectedSize(e.target.value)}
+            >
               <option value="s">S</option>
               <option value="m">M</option>
               <option value="l">L</option>
               <option value="xl">XL</option>
             </select>
-            <button className="bg-[#DECDB7] text-white px-6 py-3 rounded-md hover:bg-[#CBB89A] hover:cursor-pointer transition-colors">
-              Voeg toe aan winkelwagen
+            <button
+              className="bg-[#DECDB7] text-white px-6 py-3 rounded-md hover:bg-[#CBB89A] hover:cursor-pointer transition-colors"
+              onClick={() => {
+                const imageUrl = sortedImages[0]?.image_url || "";
+                addToCart({
+                  productId: product.id,
+                  title: product.title,
+                  description: product.description || "",
+                  price: Number(product.price),
+                  imageUrl: imageUrl,
+                  size: selectedSize.toUpperCase(),
+                });
+                setAddedToCart(true);
+                setTimeout(() => setAddedToCart(false), 2000);
+              }}
+            >
+              {addedToCart ? "Toegevoegd!" : "Voeg toe aan winkelwagen"}
             </button>
           </div>
         </div>
