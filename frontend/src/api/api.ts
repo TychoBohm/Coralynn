@@ -252,3 +252,74 @@ export async function removeFromWishlist(productId: string): Promise<{ message: 
 export async function checkInWishlist(productId: string): Promise<{ in_wishlist: boolean }> {
   return fetchFromApi(`/api/wishlist/check/${productId}`);
 }
+
+// ============ ORDER FUNCTIES ============
+
+export interface OrderItemCreate {
+  product_id?: string;
+  product_title: string;
+  product_price: number;
+  product_image_url?: string;
+  size?: string;
+  quantity: number;
+}
+
+export interface OrderCreate {
+  customer_name: string;
+  customer_email: string;
+  customer_phone?: string;
+  shipping_method: 'bezorgen' | 'ophalen';
+  shipping_city?: string;
+  shipping_street?: string;
+  shipping_postal_code?: string;
+  items: OrderItemCreate[];
+}
+
+export interface OrderItem {
+  id: string;
+  product_id?: string;
+  product_title: string;
+  product_price: number;
+  product_image_url?: string;
+  size?: string;
+  quantity: number;
+  line_total: number;
+}
+
+export interface Order {
+  id: string;
+  order_number: string;
+  user_id: string;
+  customer_name: string;
+  customer_email: string;
+  customer_phone?: string;
+  shipping_method: string;
+  shipping_city?: string;
+  shipping_street?: string;
+  shipping_postal_code?: string;
+  subtotal: number;
+  shipping_cost: number;
+  total: number;
+  status: string;
+  created_at: string;
+  updated_at?: string;
+  items: OrderItem[];
+}
+
+// maak nieuwe bestelling aan
+export async function createOrder(orderData: OrderCreate): Promise<Order> {
+  return fetchFromApi('/api/orders', {
+    method: 'POST',
+    body: JSON.stringify(orderData),
+  });
+}
+
+// haal alle bestellingen van ingelogde gebruiker op
+export async function getMyOrders(): Promise<Order[]> {
+  return fetchFromApi('/api/orders');
+}
+
+// haal specifieke bestelling op
+export async function getOrder(orderId: string): Promise<Order> {
+  return fetchFromApi(`/api/orders/${orderId}`);
+}
