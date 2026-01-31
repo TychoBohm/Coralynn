@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-import { updateUser } from "../api/api";
+import { updateUser, createOrder } from "../api/api";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -119,8 +119,38 @@ const Checkout = () => {
       }
     }
 
+    // Sla bestelling op in database als gebruiker is ingelogd
+    let orderNumber = generateOrderNumber();
+
+    if (isAuthenticated) {
+      try {
+        const orderResponse = await createOrder({
+          customer_name: name,
+          customer_email: email,
+          customer_phone: phone || undefined,
+          shipping_method: shipping,
+          shipping_city: shipping === "bezorgen" ? city : undefined,
+          shipping_street: shipping === "bezorgen" ? street : undefined,
+          shipping_postal_code:
+            shipping === "bezorgen" ? postalCode : undefined,
+          items: items.map((item) => ({
+            product_id: item.productId,
+            product_title: item.title,
+            product_price: item.price,
+            product_image_url: item.imageUrl,
+            size: item.size,
+            quantity: item.quantity,
+          })),
+        });
+        orderNumber = orderResponse.order_number;
+      } catch (err) {
+        console.error("Kon bestelling niet opslaan:", err);
+        // Ga door met lokaal gegenereerd ordernummer
+      }
+    }
+
     // Simuleer een korte vertraging (alsof er een betaling wordt verwerkt)
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     const orderDetails = {
       name,
@@ -140,9 +170,10 @@ const Checkout = () => {
         quantity: item.quantity,
         price: item.price,
         size: item.size,
+        imageUrl: item.imageUrl,
       })),
       total: shipping === "ophalen" ? subtotal : subtotal + 4.95,
-      orderNumber: generateOrderNumber(),
+      orderNumber,
     };
 
     // Leeg de winkelwagen
