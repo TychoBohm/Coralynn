@@ -47,3 +47,8 @@ class ProductResponse(ProductBase):
 
     class Config:
         from_attributes = True
+
+
+class ReorderRequest(BaseModel):
+    """Request voor herordenen van items"""
+    ids: list[UUID]

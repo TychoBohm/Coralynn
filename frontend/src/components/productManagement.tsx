@@ -8,6 +8,8 @@ import {
   uploadImage,
   addProductImage,
   deleteProductImage,
+  reorderProducts,
+  reorderProductImages,
 } from "../api/api";
 import type { Product, ProductCreate, ProductUpdate } from "../api/api";
 
@@ -26,7 +28,24 @@ const ProductManagement = () => {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [imageIds, setImageIds] = useState<string[]>([]); // voor bestaande images
   const [uploading, setUploading] = useState(false);
+
+  // drag state voor producten
+  const [draggedProductIndex, setDraggedProductIndex] = useState<number | null>(
+    null,
+  );
+  const [dragOverProductIndex, setDragOverProductIndex] = useState<
+    number | null
+  >(null);
+
+  // drag state voor images
+  const [draggedImageIndex, setDraggedImageIndex] = useState<number | null>(
+    null,
+  );
+  const [dragOverImageIndex, setDragOverImageIndex] = useState<number | null>(
+    null,
+  );
 
   // laad producten
   useEffect(() => {
@@ -55,6 +74,7 @@ const ProductManagement = () => {
         // gebruik volledige URL
         const fullUrl = `http://localhost:8000${result.url}`;
         setImageUrls((prev) => [...prev, fullUrl]);
+        setImageIds((prev) => [...prev, ""]); // lege id voor nieuwe images
       }
     } catch (err) {
       setError("Upload mislukt");
@@ -63,11 +83,96 @@ const ProductManagement = () => {
     }
   };
 
+  // Product drag handlers
+  const handleProductDragStart = (index: number) => {
+    setDraggedProductIndex(index);
+  };
+
+  const handleProductDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    setDragOverProductIndex(index);
+  };
+
+  const handleProductDragEnd = async () => {
+    if (
+      draggedProductIndex === null ||
+      dragOverProductIndex === null ||
+      draggedProductIndex === dragOverProductIndex
+    ) {
+      setDraggedProductIndex(null);
+      setDragOverProductIndex(null);
+      return;
+    }
+
+    const newProducts = [...products];
+    const [draggedItem] = newProducts.splice(draggedProductIndex, 1);
+    newProducts.splice(dragOverProductIndex, 0, draggedItem);
+    setProducts(newProducts);
+
+    // Sla nieuwe volgorde op in backend
+    try {
+      await reorderProducts(newProducts.map((p) => p.id));
+    } catch (err) {
+      setError("Kon volgorde niet opslaan");
+      fetchProducts(); // herstel originele volgorde
+    }
+
+    setDraggedProductIndex(null);
+    setDragOverProductIndex(null);
+  };
+
+  // Image drag handlers
+  const handleImageDragStart = (index: number) => {
+    setDraggedImageIndex(index);
+  };
+
+  const handleImageDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    setDragOverImageIndex(index);
+  };
+
+  const handleImageDragEnd = async () => {
+    if (
+      draggedImageIndex === null ||
+      dragOverImageIndex === null ||
+      draggedImageIndex === dragOverImageIndex
+    ) {
+      setDraggedImageIndex(null);
+      setDragOverImageIndex(null);
+      return;
+    }
+
+    const newUrls = [...imageUrls];
+    const newIds = [...imageIds];
+    const [draggedUrl] = newUrls.splice(draggedImageIndex, 1);
+    const [draggedId] = newIds.splice(draggedImageIndex, 1);
+    newUrls.splice(dragOverImageIndex, 0, draggedUrl);
+    newIds.splice(dragOverImageIndex, 0, draggedId);
+    setImageUrls(newUrls);
+    setImageIds(newIds);
+
+    // Sla nieuwe volgorde op als we een bestaand product bewerken
+    if (editingProduct) {
+      const validIds = newIds.filter((id) => id !== "");
+      if (validIds.length > 0) {
+        try {
+          await reorderProductImages(editingProduct.id, validIds);
+        } catch (err) {
+          console.error("Kon afbeelding volgorde niet opslaan:", err);
+        }
+      }
+    }
+
+    setDraggedImageIndex(null);
+    setDragOverImageIndex(null);
+  };
+
   const resetForm = () => {
     setTitle("");
     setDescription("");
     setPrice("");
     setImageUrls([]);
+    setImageIds([]);
     setEditingProduct(null);
     setEditingProductId(null);
     setShowForm(false);
@@ -128,6 +233,7 @@ const ProductManagement = () => {
     setDescription(product.description || "");
     setPrice(product.price.toString());
     setImageUrls(product.images.map((img) => img.image_url));
+    setImageIds(product.images.map((img) => img.id));
     setShowForm(false); // sluit nieuw product form
   };
 
@@ -241,7 +347,33 @@ const ProductManagement = () => {
               {imageUrls.length > 0 && (
                 <div className="flex gap-2 mt-2 flex-wrap">
                   {imageUrls.map((url, i) => (
-                    <div key={i} className="relative">
+                    <div
+                      key={i}
+                      draggable
+                      onDragStart={() => handleImageDragStart(i)}
+                      onDragOver={(e) => handleImageDragOver(e, i)}
+                      onDragEnd={handleImageDragEnd}
+                      className={`relative cursor-grab active:cursor-grabbing group ${
+                        draggedImageIndex === i ? "opacity-50" : ""
+                      } ${dragOverImageIndex === i && draggedImageIndex !== i ? "ring-2 ring-[#D4B896] rounded" : ""}`}
+                    >
+                      {/* Drag indicator */}
+                      <div className="absolute top-1 left-1 bg-black/50 rounded p-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth="2"
+                          stroke="white"
+                          className="w-3 h-3"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                          />
+                        </svg>
+                      </div>
                       <img
                         src={url}
                         alt={`Preview ${i + 1}`}
@@ -249,9 +381,10 @@ const ProductManagement = () => {
                       />
                       <button
                         type="button"
-                        onClick={() =>
-                          setImageUrls(imageUrls.filter((_, idx) => idx !== i))
-                        }
+                        onClick={() => {
+                          setImageUrls(imageUrls.filter((_, idx) => idx !== i));
+                          setImageIds(imageIds.filter((_, idx) => idx !== i));
+                        }}
                         className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 text-xs cursor-pointer"
                       >
                         ×
@@ -274,12 +407,36 @@ const ProductManagement = () => {
 
       {/* Product List */}
       <div className="flex flex-col gap-4">
-        {products.map((product) => (
+        {products.map((product, index) => (
           <div
             key={product.id}
-            className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+            draggable
+            onDragStart={() => handleProductDragStart(index)}
+            onDragOver={(e) => handleProductDragOver(e, index)}
+            onDragEnd={handleProductDragEnd}
+            className={`bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow ${
+              draggedProductIndex === index ? "opacity-50" : ""
+            } ${dragOverProductIndex === index && draggedProductIndex !== index ? "border-2 border-[#D4B896]" : ""}`}
           >
             <div className="flex flex-col sm:flex-row">
+              {/* Drag Handle */}
+              <div className="hidden sm:flex items-center justify-center w-10 bg-gray-50 cursor-grab active:cursor-grabbing hover:bg-gray-100 transition-colors">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-5 h-5 text-gray-400"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                  />
+                </svg>
+              </div>
+
               {/* Product Image */}
               <div className="relative w-full h-48 sm:w-32 sm:h-32 md:w-48 md:h-48 bg-gray-100 shrink-0">
                 {product.images[0] ? (
@@ -454,7 +611,33 @@ const ProductManagement = () => {
                     {imageUrls.length > 0 && (
                       <div className="flex gap-2 mt-3 flex-wrap">
                         {imageUrls.map((url, i) => (
-                          <div key={i} className="relative group">
+                          <div
+                            key={i}
+                            draggable
+                            onDragStart={() => handleImageDragStart(i)}
+                            onDragOver={(e) => handleImageDragOver(e, i)}
+                            onDragEnd={handleImageDragEnd}
+                            className={`relative group cursor-grab active:cursor-grabbing ${
+                              draggedImageIndex === i ? "opacity-50" : ""
+                            } ${dragOverImageIndex === i && draggedImageIndex !== i ? "ring-2 ring-[#D4B896] rounded-lg" : ""}`}
+                          >
+                            {/* Drag indicator */}
+                            <div className="absolute top-1 left-1 bg-black/50 rounded p-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth="2"
+                                stroke="white"
+                                className="w-3 h-3"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                                />
+                              </svg>
+                            </div>
                             <img
                               src={url}
                               alt={`Preview ${i + 1}`}
@@ -462,24 +645,27 @@ const ProductManagement = () => {
                             />
                             <button
                               type="button"
-                              onClick={() =>
+                              onClick={() => {
                                 setImageUrls(
                                   imageUrls.filter((_, idx) => idx !== i),
-                                )
-                              }
+                                );
+                                setImageIds(
+                                  imageIds.filter((_, idx) => idx !== i),
+                                );
+                              }}
                               className="absolute -top-2 -right-2 text-white rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
-                                stroke-width="2.3"
+                                strokeWidth="2.3"
                                 stroke="currentColor"
                                 className="size-6 bg-red-500 rounded-full"
                               >
                                 <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
                                   d="M6 18 18 6M6 6l12 12"
                                 />
                               </svg>
