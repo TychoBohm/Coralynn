@@ -1,7 +1,7 @@
 # product routes
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import Optional
+from typing import Optional, List
 from uuid import UUID
 from pathlib import Path
 import os
@@ -14,7 +14,8 @@ from app.schemas.product import (
     ProductUpdate,
     ProductResponse,
     ProductImageCreate,
-    ProductImageResponse
+    ProductImageResponse,
+    ReorderRequest,
 )
 from app.routers.auth import get_current_superuser
 
@@ -39,9 +40,26 @@ def get_products(
     limit: int = 100,
     db: Session = Depends(get_db)
 ):
-    # haal alle producten op
-    products = db.query(Product).offset(skip).limit(limit).all()
+    # haal alle producten op, gesorteerd op display_order
+    products = db.query(Product).order_by(Product.display_order).offset(skip).limit(limit).all()
     return products
+
+
+# reorder endpoints - MOETEN VOOR /{product_id} routes staan!
+@router.put("/reorder", status_code=status.HTTP_200_OK)
+def reorder_products(
+    reorder_data: ReorderRequest,
+    current_user: User = Depends(get_current_superuser),
+    db: Session = Depends(get_db)
+):
+    """Herorden producten (alleen superuser)"""
+    for i, product_id in enumerate(reorder_data.ids):
+        product = db.query(Product).filter(Product.id == product_id).first()
+        if product:
+            product.display_order = i  # type: ignore
+    
+    db.commit()
+    return {"message": "Volgorde bijgewerkt"}
 
 
 @router.get("/{product_id}", response_model=ProductResponse)
@@ -187,3 +205,30 @@ def delete_product_image(
     db.delete(image)
     db.commit()
     return None
+
+
+@router.put("/{product_id}/images/reorder", status_code=status.HTTP_200_OK)
+def reorder_product_images(
+    product_id: UUID,
+    reorder_data: ReorderRequest,
+    current_user: User = Depends(get_current_superuser),
+    db: Session = Depends(get_db)
+):
+    """Herorden afbeeldingen van een product (alleen superuser)"""
+    product = db.query(Product).filter(Product.id == product_id).first()
+    if not product:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Product niet gevonden"
+        )
+    
+    for i, image_id in enumerate(reorder_data.ids):
+        image = db.query(ProductImage).filter(
+            ProductImage.id == image_id,
+            ProductImage.product_id == product_id
+        ).first()
+        if image:
+            image.sort_order = i  # type: ignore
+    
+    db.commit()
+    return {"message": "Afbeelding volgorde bijgewerkt"}

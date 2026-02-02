@@ -202,6 +202,22 @@ export async function deleteProductImage(productId: string, imageId: string): Pr
   });
 }
 
+// herorden producten (alleen superuser)
+export async function reorderProducts(productIds: string[]): Promise<{ message: string }> {
+  return fetchFromApi('/api/products/reorder', {
+    method: 'PUT',
+    body: JSON.stringify({ ids: productIds }),
+  });
+}
+
+// herorden afbeeldingen van product (alleen superuser)
+export async function reorderProductImages(productId: string, imageIds: string[]): Promise<{ message: string }> {
+  return fetchFromApi(`/api/products/${productId}/images/reorder`, {
+    method: 'PUT',
+    body: JSON.stringify({ ids: imageIds }),
+  });
+}
+
 // upload afbeelding
 export async function uploadImage(file: File): Promise<{ filename: string; url: string }> {
   const token = getToken();
