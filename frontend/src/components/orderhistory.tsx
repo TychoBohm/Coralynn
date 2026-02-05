@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { getMyOrders, type Order } from "../api/api";
+import { getMyOrders, cancelOrder, type Order } from "../api/api";
 import { useCart } from "../context/CartContext";
 
 const Bestelgeschiedenis = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [addedItems, setAddedItems] = useState<string[]>([]);
+  const [cancellingOrder, setCancellingOrder] = useState<string | null>(null);
   const { addToCart } = useCart();
 
   useEffect(() => {
@@ -33,6 +35,28 @@ const Bestelgeschiedenis = () => {
       imageUrl: item.product_image_url || "",
       size: item.size || "One Size",
     });
+    setAddedItems((prev) => [...prev, item.id]);
+    setTimeout(() => {
+      setAddedItems((prev) => prev.filter((id) => id !== item.id));
+    }, 2000);
+  };
+
+  const handleCancelOrder = async (orderId: string) => {
+    if (!confirm("Weet je zeker dat je deze bestelling wilt annuleren?")) {
+      return;
+    }
+    setCancellingOrder(orderId);
+    try {
+      const updatedOrder = await cancelOrder(orderId);
+      setOrders((prev) =>
+        prev.map((order) => (order.id === orderId ? updatedOrder : order)),
+      );
+    } catch (err) {
+      console.error("Kon bestelling niet annuleren:", err);
+      alert("Kon bestelling niet annuleren");
+    } finally {
+      setCancellingOrder(null);
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -41,6 +65,21 @@ const Bestelgeschiedenis = () => {
       month: "long",
       year: "numeric",
     });
+  };
+
+  const getEstimatedDeliveryDate = (createdAt: string) => {
+    const orderDate = new Date(createdAt);
+    const deliveryDate = new Date(orderDate);
+    deliveryDate.setDate(deliveryDate.getDate() + 3);
+    return deliveryDate.toLocaleDateString("nl-NL", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  };
+
+  const canCancelOrder = (order: Order) => {
+    return order.status === "pending";
   };
 
   const getStatusLabel = (status: string) => {
@@ -119,6 +158,13 @@ const Bestelgeschiedenis = () => {
                 <p className="text-sm text-gray-500">
                   Besteld op {formatDate(order.created_at)}
                 </p>
+                {order.status !== "cancelled" &&
+                  order.status !== "delivered" && (
+                    <p className="text-sm text-gray-500">
+                      Verwachte levering:{" "}
+                      {getEstimatedDeliveryDate(order.created_at)}
+                    </p>
+                  )}
               </div>
               <div className="flex items-center gap-3">
                 <span
@@ -126,6 +172,15 @@ const Bestelgeschiedenis = () => {
                 >
                   {getStatusLabel(order.status).label}
                 </span>
+                {canCancelOrder(order) && (
+                  <button
+                    onClick={() => handleCancelOrder(order.id)}
+                    disabled={cancellingOrder === order.id}
+                    className="px-3 py-1 text-xs font-medium text-red-600 border border-red-300 rounded-full hover:bg-red-50 transition-colors disabled:opacity-50"
+                  >
+                    {cancellingOrder === order.id ? "Bezig..." : "Annuleren"}
+                  </button>
+                )}
                 <span className="font-bold">€{order.total.toFixed(2)}</span>
               </div>
             </div>
@@ -133,7 +188,7 @@ const Bestelgeschiedenis = () => {
             <div className="flex flex-col gap-3">
               {order.items.map((item) => (
                 <div key={item.id} className="flex gap-4 items-center">
-                  <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                  <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden shrink-0">
                     {item.product_image_url ? (
                       <img
                         src={item.product_image_url}
@@ -171,9 +226,11 @@ const Bestelgeschiedenis = () => {
                   </div>
                   <button
                     onClick={() => handleAddToCart(item)}
-                    className="bg-[#D4B896] text-white px-4 py-2 rounded-md hover:bg-[#c9ad87] hover:cursor-pointer transition-colors text-sm whitespace-nowrap"
+                    className="bg-[#D4B896] text-white px-4 py-2 rounded-md hover:bg-[#c9ad87] hover:cursor-pointer transition-colors text-sm whitespace-nowrap min-w-37"
                   >
-                    Opnieuw bestellen
+                    {addedItems.includes(item.id)
+                      ? "Toegevoegd"
+                      : "Opnieuw bestellen"}
                   </button>
                 </div>
               ))}

@@ -6,6 +6,7 @@ from uuid import UUID
 import random
 import string
 import time
+from datetime import datetime, timedelta, timezone
 
 from app.db.database import get_db
 from app.models.order import Order, OrderItem
@@ -93,6 +94,33 @@ def get_my_orders(
         Order.user_id == current_user.id
     ).order_by(Order.created_at.desc()).all()
     
+    # Automatisch status bijwerken op basis van tijd
+    now = datetime.now(timezone.utc)
+    updated = False
+    
+    for order in orders:
+        if order.status == "cancelled":
+            continue
+            
+        # Maak order.created_at timezone-aware als dat nog niet zo is
+        order_created = order.created_at
+        if order_created.tzinfo is None:
+            order_created = order_created.replace(tzinfo=timezone.utc)
+        
+        days_since_order = (now - order_created).days
+        
+        # Na 3 dagen: bezorgd
+        if days_since_order >= 3 and order.status != "delivered":
+            order.status = "delivered"
+            updated = True
+        # Na 1 dag: verzonden
+        elif days_since_order >= 1 and order.status == "pending":
+            order.status = "shipped"
+            updated = True
+    
+    if updated:
+        db.commit()
+    
     return orders
 
 
@@ -113,5 +141,36 @@ def get_order(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Bestelling niet gevonden"
         )
+    
+    return order
+
+
+@router.put("/{order_id}/cancel", response_model=OrderResponse)
+def cancel_order(
+    order_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Annuleer een bestelling (alleen als status pending is)"""
+    order = db.query(Order).filter(
+        Order.id == order_id,
+        Order.user_id == current_user.id
+    ).first()
+    
+    if not order:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Bestelling niet gevonden"
+        )
+    
+    if order.status != "pending":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Alleen bestellingen met status 'In behandeling' kunnen worden geannuleerd"
+        )
+    
+    order.status = "cancelled"
+    db.commit()
+    db.refresh(order)
     
     return order
