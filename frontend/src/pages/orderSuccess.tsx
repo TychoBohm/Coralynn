@@ -142,6 +142,16 @@ const OrderSuccess = () => {
                   {orderDetails.address?.street}, {orderDetails.address?.city}
                 </p>
                 <p className="text-sm">{orderDetails.address?.postalCode}</p>
+                <p className="text-sm text-gray-600 mt-1">
+                  Verwachte levering:{" "}
+                  {new Date(
+                    Date.now() + 3 * 24 * 60 * 60 * 1000,
+                  ).toLocaleDateString("nl-NL", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </p>
               </>
             ) : (
               <>
@@ -152,7 +162,14 @@ const OrderSuccess = () => {
                   Schelpstraat 124, Bikinibroek, Stille Oceaan
                 </p>
                 <p className="text-sm text-gray-600 mt-1">
-                  Je bestelling ligt 3 dagen voor je klaar.
+                  Je bestelling ligt 3 dagen voor je klaar (tot{" "}
+                  {new Date(
+                    Date.now() + 3 * 24 * 60 * 60 * 1000,
+                  ).toLocaleDateString("nl-NL", {
+                    day: "numeric",
+                    month: "long",
+                  })}
+                  ).
                 </p>
               </>
             )}

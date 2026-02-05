@@ -498,6 +498,17 @@ const Checkout = () => {
                 <span>Verzendkosten</span>
                 <span>{shipping === "ophalen" ? "Gratis" : "€4.95"}</span>
               </div>
+              <div className="flex justify-between text-gray-500">
+                <span>Verwachte levering</span>
+                <span>
+                  {new Date(
+                    Date.now() + 3 * 24 * 60 * 60 * 1000,
+                  ).toLocaleDateString("nl-NL", {
+                    day: "numeric",
+                    month: "long",
+                  })}
+                </span>
+              </div>
               <div className="flex justify-between font-bold text-lg pt-2 border-t mt-2">
                 <span>Totaal</span>
                 <span>

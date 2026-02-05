@@ -339,3 +339,10 @@ export async function getMyOrders(): Promise<Order[]> {
 export async function getOrder(orderId: string): Promise<Order> {
   return fetchFromApi(`/api/orders/${orderId}`);
 }
+
+// annuleer bestelling
+export async function cancelOrder(orderId: string): Promise<Order> {
+  return fetchFromApi(`/api/orders/${orderId}/cancel`, {
+    method: 'PUT',
+  });
+}

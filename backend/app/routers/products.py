@@ -45,7 +45,7 @@ def get_products(
     return products
 
 
-# reorder endpoints - MOETEN VOOR /{product_id} routes staan!
+# reorder 
 @router.put("/reorder", status_code=status.HTTP_200_OK)
 def reorder_products(
     reorder_data: ReorderRequest,
