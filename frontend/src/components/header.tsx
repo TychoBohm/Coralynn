@@ -1,4 +1,4 @@
-import coralynnHeader from "../assets/coralynn-header.mp4";
+import coralynnHeader from "../assets/coralynn-header-downscale.mp4";
 
 import { useEffect, useState } from "react";
 import Navbar from "./navbar";

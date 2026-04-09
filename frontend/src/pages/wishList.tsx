@@ -3,7 +3,12 @@ import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 import Card from "../components/productCard";
 import { Link, useNavigate } from "react-router-dom";
-import { getWishlist, removeFromWishlist, isLoggedIn } from "../api/api";
+import {
+  getWishlist,
+  removeFromWishlist,
+  isLoggedIn,
+  getImageUrl,
+} from "../api/api";
 import type { Product } from "../api/api";
 
 const Wishlist = () => {
@@ -51,12 +56,7 @@ const Wishlist = () => {
       const sorted = [...product.images].sort(
         (a, b) => a.sort_order - b.sort_order,
       );
-      const url = sorted[0].image_url;
-      // check of URL al volledig is
-      if (url.startsWith("http")) {
-        return url;
-      }
-      return `http://localhost:8000${url}`;
+      return getImageUrl(sorted[0].image_url);
     }
     return undefined;
   };

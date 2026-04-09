@@ -1,5 +1,13 @@
 // api.ts - backend api calls
-const BASE_URL = 'http://localhost:8000';
+export const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+// helper function to get full image URL
+export function getImageUrl(url: string): string {
+  if (url.startsWith('http')) {
+    return url;
+  }
+  return `${BASE_URL}${url}`;
+}
 
 // haal token uit localstorage
 export function getToken(): string | null {

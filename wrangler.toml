@@ -1,0 +1,16 @@
+name = "coralynn"
+main = "dist/index.html"
+compatibility_date = "2024-12-18"
+
+[env.production]
+vars = { VITE_API_URL = "https://api.coralynn.com" }
+
+[env.staging]
+vars = { VITE_API_URL = "https://staging-api.coralynn.com" }
+
+[env.development]
+vars = { VITE_API_URL = "http://localhost:8000" }
+
+[[routes]]
+pattern = "/api/*"
+zone_name = "coralynn.com"

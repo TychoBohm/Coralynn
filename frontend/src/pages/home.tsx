@@ -9,6 +9,7 @@ import {
   addToWishlist,
   removeFromWishlist,
   isLoggedIn,
+  getImageUrl,
 } from "../api/api";
 import type { Product } from "../api/api";
 
@@ -70,12 +71,7 @@ const Home = () => {
       const sorted = [...product.images].sort(
         (a, b) => a.sort_order - b.sort_order,
       );
-      const url = sorted[0].image_url;
-      // check of URL al volledig is
-      if (url.startsWith("http")) {
-        return url;
-      }
-      return `http://localhost:8000${url}`;
+      return getImageUrl(sorted[0].image_url);
     }
     return undefined;
   };

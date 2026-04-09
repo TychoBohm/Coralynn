@@ -357,7 +357,7 @@ const Navbar = () => {
           </div>
           <hr className="text-gray-200" />
           {/* User Info */}
-          <div className="p-4 border-b">
+          <div className="p-4">
             {isAuthenticated && user ? (
               <div className="space-y-1">
                 <p className="font-semibold text-gray-800">
@@ -381,9 +381,9 @@ const Navbar = () => {
               </p>
             )}
           </div>
-          <hr className="text-gray-200" />
+          <hr className="text-gray-300" />
           {/* Navigation Links */}
-          <nav className="p-4 border-b">
+          <nav className="p-4">
             <ul className="space-y-3">
               <li>
                 <button
@@ -414,9 +414,9 @@ const Navbar = () => {
               </li>
             </ul>
           </nav>
-          <hr className="text-gray-200" />
+          <hr className="text-gray-300" />
           {/* Profiel Links */}
-          <nav className="p-4 border-b">
+          <nav className="p-4">
             <p className="font-semibold mb-3 text-gray-800">Profiel</p>
             <ul className="space-y-3 ml-4">
               <li>
