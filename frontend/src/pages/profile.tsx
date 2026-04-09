@@ -1,10 +1,8 @@
-import {
-  Footer,
-  Navbar,
-  OrderHistory,
-  ProfileSettings,
-  ProductManagement,
-} from "../components";
+import Footer from "../components/footer";
+import Navbar from "../components/navbar";
+import OrderHistory from "../components/orderHistory";
+import ProfileSettings from "../components/profileSettings";
+import ProductManagement from "../components/productManagement";
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useSearchParams, useNavigate } from "react-router-dom";

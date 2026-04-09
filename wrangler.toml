@@ -20,7 +20,3 @@ vars = { VITE_API_URL = "http://localhost:8000" }
 binding = "DB"
 database_name = "coralynn"
 database_id = "ab37b587-9c11-4fdf-bd17-064dc4b87e5f"
-
-[[routes]]
-pattern = "/api/*"
-zone_name = "coralynn.com"

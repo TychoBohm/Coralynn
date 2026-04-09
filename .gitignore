@@ -1,0 +1,45 @@
+# Node modules
+node_modules/
+package-lock.json
+npm-debug.log*
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Wrangler/Cloudflare
+.wrangler/
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+venv/
+env/
+.venv
+
+# Uploads
+uploads/
+
+# Misc
+.turbo/
