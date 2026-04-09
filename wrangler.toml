@@ -1,6 +1,9 @@
 name = "coralynn"
-main = "dist/index.html"
 compatibility_date = "2024-12-18"
+
+[build]
+command = "cd frontend && npm install && npm run build:prod"
+output_directory = "frontend/dist"
 
 [env.production]
 vars = { VITE_API_URL = "https://api.coralynn.com" }
@@ -10,6 +13,11 @@ vars = { VITE_API_URL = "https://staging-api.coralynn.com" }
 
 [env.development]
 vars = { VITE_API_URL = "http://localhost:8000" }
+
+[[d1_databases]]
+binding = "DB"
+database_name = "coralynn"
+database_id = "ab37b587-9c11-4fdf-bd17-064dc4b87e5f"
 
 [[routes]]
 pattern = "/api/*"

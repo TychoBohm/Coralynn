@@ -1,4 +1,4 @@
-# database connectie
+# database connectie - SQLite voor Cloudflare D1
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 import os
@@ -10,15 +10,17 @@ backend_dir = Path(__file__).resolve().parent.parent.parent
 env_path = backend_dir / '.env'
 load_dotenv(env_path)
 
-DB_NAME = os.getenv('DB_NAME', 'coralynn')
-DB_USER = os.getenv('DB_USER', 'postgres')
-DB_PASSWORD = os.getenv('DB_PASSWORD', '')
-DB_HOST = os.getenv('DB_HOST', 'localhost')
-DB_PORT = os.getenv('DB_PORT', '5432')
+# D1 Database - SQLite
+DATABASE_PATH = backend_dir / 'coralynn.db'
+DATABASE_URL = f"sqlite:///{DATABASE_PATH}"
 
-DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+# Create engine with SQLite-specific settings
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False},
+    echo=False
+)
 
-engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
