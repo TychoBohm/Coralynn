@@ -10,6 +10,7 @@ import {
   deleteProductImage,
   reorderProducts,
   reorderProductImages,
+  getImageUrl,
 } from "../api/api";
 import type { Product, ProductCreate, ProductUpdate } from "../api/api";
 
@@ -72,7 +73,7 @@ const ProductManagement = () => {
       for (const file of Array.from(files)) {
         const result = await uploadImage(file);
         // gebruik volledige URL
-        const fullUrl = `http://localhost:8000${result.url}`;
+        const fullUrl = getImageUrl(result.url);
         setImageUrls((prev) => [...prev, fullUrl]);
         setImageIds((prev) => [...prev, ""]); // lege id voor nieuwe images
       }

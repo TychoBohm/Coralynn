@@ -6,6 +6,7 @@ from uuid import UUID
 
 
 class UserBase(BaseModel):
+    # gemeenschappelijke velden
     email: EmailStr
     phone_number: Optional[str] = None
     name: Optional[str] = None
